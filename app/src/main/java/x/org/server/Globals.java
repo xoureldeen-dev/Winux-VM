@@ -54,7 +54,7 @@ class Globals
 	public static boolean InhibitSuspend = true;
 	public static boolean CreateService = true;
 	public static String ReadmeText = "";
-	public static String CommandLine = "XSDL :3 -screenbuttons -nohelp -screen";
+	public static String CommandLine = "XSDL :3 -screenbuttons -nohelp";
 	public static boolean AppUsesMouse = true;
 	public static boolean AppNeedsTwoButtonMouse = true;
 	public static boolean RightMouseButtonLongPress = false;
