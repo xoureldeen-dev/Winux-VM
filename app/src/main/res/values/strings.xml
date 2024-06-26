@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VEMU</string>
+    <string name="app_name">Boxvidra</string>
     <!--======================XServer XSDL STRINGS====================-->
 
     <string name="init">Initializing</string>
@@ -203,5 +203,15 @@
 
     <string name="notification_app_is_running">%s is running</string>
     <string name="notification_stop">Stop</string>
-\
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="launch">Launch</string>
+    <string name="startup_command">Startup Command</string>
+    <string name="default_startupCmd">startxfce4</string>
+    <string name="distro_version">Ubuntu 24.04 LTS</string>
+    <string name="setup_boxvidra">SETUP BOXVIDRA (DON\'T EXIT THE APP)</string>
+    <string name="go_ahead">GO AHEAD</string>
 </resources>

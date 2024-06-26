@@ -38,6 +38,8 @@ import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.InputType;
 import android.text.SpannedString;
@@ -256,6 +258,10 @@ public class MainActivity extends Activity
 		// vterm
 		terminal = new Terminal(instance);
 		terminal.showVterm();
+
+		final Handler handler = new Handler(Looper.getMainLooper());
+		handler.postDelayed(() -> terminal.executeShellCommand(instance.getIntent().getStringExtra("STARTUP_CMD")), 6000);
+
 	}
 	
 	public void setUpStatusLabel()

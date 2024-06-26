@@ -38,8 +38,6 @@ public class Terminal {
     public Terminal(Activity activity) {
         this.activity = activity;
 
-        setupFiles();
-
         bottomSheetDialog = new BottomSheetDialog(activity);
         view = activity.getLayoutInflater().inflate(R.layout.terminal_bottom_sheet, null);
         bottomSheetDialog.setContentView(view);
@@ -96,33 +94,6 @@ public class Terminal {
 
     public void showVterm() {
         bottomSheetDialog.show();
-    }
-
-    public void setupFiles() {
-        String filesDir = activity.getFilesDir().getAbsolutePath();
-        String nativeLibDir = activity.getApplicationInfo().nativeLibraryDir;
-
-        File tmpDir = new File(filesDir + "/tmp");
-        if (!tmpDir.exists()) {
-            tmpDir.mkdirs();
-        }
-
-        File distroDir = new File(filesDir + "/distro");
-        if (!distroDir.exists()) {
-            String[] cmdline = {"tar", "xf", nativeLibDir + "/libbootstrap.so", "-C", filesDir};
-            try {
-                Runtime.getRuntime().exec(cmdline);
-                //CORRUPTS RWX FILES!
-                //TAR.decompress(bootstrapFile.getPath(), new File("/data/data/com.vectras.vm/"));
-            } catch (IOException e) {
-                new AlertDialog.Builder(activity)
-                        .setTitle("Extract Bootstrap")
-                        .setMessage("Error!" + "\n"
-                                + e.getMessage())
-                        .show();
-                return;
-            }
-        }
     }
 
     private void updateUserPrompt(TextView promptView) {
@@ -193,7 +164,7 @@ public class Terminal {
                     processBuilder.environment().put("TERM", "xterm-256color");
                     processBuilder.environment().put("TMPDIR", "/tmp");
                     processBuilder.environment().put("SHELL", "/bin/sh");
-                    processBuilder.environment().put("DISPLAY", getLocalIpAddress()+":0");
+                    processBuilder.environment().put("DISPLAY", getLocalIpAddress()+":3");
 
                     // Example PRoot command; replace 'libproot.so' and other paths as needed
                     String[] prootCommand = {
@@ -209,7 +180,7 @@ public class Terminal {
                             "-b", "/storage",
                             "-b", "/data",
                             "-w", "/root",
-                            "/bin/sh",
+                            "/bin/bash",
                             "--login"// The shell to execute inside PRoot
                     };
 

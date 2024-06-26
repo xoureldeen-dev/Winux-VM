@@ -2,34 +2,58 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!--XServer XSDL-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- XServer XSDL -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:banner="@mipmap/ic_launcher"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VEMU"
-        tools:targetApi="31"
-        android:banner="@mipmap/ic_launcher">
-        <!--XServer XSDL-->
-        <activity android:name="x.org.server.MainActivity"
-            android:alwaysRetainTaskState="true"
-            android:launchMode="singleTask"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
-            android:windowSoftInputMode="stateUnspecified"
-            android:exported="true">
+        tools:targetApi="31">
+        <activity
+            android:name="com.vectras.activities.SplashActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.vectras.activities.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.VEMU"/>
+
+        <!-- XServer XSDL -->
+        <activity
+            android:name="x.org.server.MainActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateUnspecified">
+            <intent-filter>
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" /> <!-- Samsung's multiwindow -->
                 <action android:name="com.sec.android.airview.HOVER" /> <!-- Stupid Samsung requires their own intent for finger-hover events -->
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" /> <!-- Android TV requires this -->
@@ -37,18 +61,22 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" />
+        <meta-data
+            android:name="com.sec.android.support.multiwindow"
+            android:value="true" />
 
-        <activity android:name="x.org.server.RestartMainActivity"
+        <activity
+            android:name="x.org.server.RestartMainActivity"
             android:alwaysRetainTaskState="true"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
             android:launchMode="singleTask"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
-            android:windowSoftInputMode="stateUnspecified"
-            android:process=":RestartMainActivity" />
-        <service android:name="x.org.server.DummyService"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
-            android:enabled="true"/>
+            android:process=":RestartXsdlActivity"
+            android:windowSoftInputMode="stateUnspecified" />
 
+        <service
+            android:name="x.org.server.DummyService"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
+            android:enabled="true" />
     </application>
 
 </manifest>
