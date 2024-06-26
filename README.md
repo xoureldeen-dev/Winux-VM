@@ -1,2 +1,2 @@
-# Tiny-Vterm
- alpine proot terminal library for android
+## Boxvidra Android
+ubuntu proot emulator.
