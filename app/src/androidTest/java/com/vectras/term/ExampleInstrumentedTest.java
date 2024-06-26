@@ -1,4 +1,4 @@
-package com.vectras.term;
+package com.vectras.boxvidra;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.vectras.term", appContext.getPackageName());
+        assertEquals("com.vectras.boxvidra", appContext.getPackageName());
     }
 }

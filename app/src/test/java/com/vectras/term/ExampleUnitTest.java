@@ -1,4 +1,4 @@
-package com.vectras.term;
+package com.vectras.boxvidra;
 
 import org.junit.Test;
 

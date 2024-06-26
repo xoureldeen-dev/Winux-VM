@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.vectras.term'
+    namespace 'com.vectras.boxvidra'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.vectras.term"
+        applicationId "com.vectras.boxvidra"
         minSdk 21
         targetSdk 29
         versionCode 1
@@ -25,18 +25,30 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
         viewBinding true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources false // Reproducible builds
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path "src/main/jni/Android.mk"
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs 'src/main/jni/prebuilt'
+        }
     }
 }
 
