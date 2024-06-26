@@ -26,8 +26,6 @@ import android.view.KeyEvent;
 
 class Globals
 {
-	//allplatform init
-	static String WineScreen = "800x600x32";
 	// These config options are modified by ChangeAppsettings.sh script - see the detailed descriptions there
 	public static String ApplicationName = "XServerXSDL";
 	public static String AppLibraries[] = { "sdl_native_helpers", "sdl-1.2", "freetype", "sdl_ttf", "crypto", "sdl_savepng", "jpeg", "png" };
@@ -56,7 +54,7 @@ class Globals
 	public static boolean InhibitSuspend = true;
 	public static boolean CreateService = true;
 	public static String ReadmeText = "";
-	public static String CommandLine = "XSDL -screenbuttons -nohelp -screen " + WineScreen;
+	public static String CommandLine = "XSDL :3 -screenbuttons -nohelp -screen";
 	public static boolean AppUsesMouse = true;
 	public static boolean AppNeedsTwoButtonMouse = true;
 	public static boolean RightMouseButtonLongPress = false;
