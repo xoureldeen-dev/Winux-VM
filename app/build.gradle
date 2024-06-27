@@ -1,53 +1,37 @@
-plugins {
-    id 'com.android.application'
-}
+apply plugin: 'com.android.application'
 
 android {
     namespace 'com.vectras.boxvidra'
-    compileSdk 34
-
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.vectras.boxvidra"
-        minSdk 21
-        targetSdk 29
-        versionCode 1
-        versionName "1.0.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        minSdkVersion 26
+        targetSdkVersion 34
+        versionCode 14
+        versionName "1.03.00"
+        buildConfigField "String", "COMMIT", "\"" + ("git rev-parse HEAD\n".execute().getText().trim() ?: (System.getenv('CURRENT_COMMIT') ?: "NO_COMMIT")) + "\""
     }
 
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
-            universalApk true
-        }
+    splits.abi {
+        enable true
+        reset()
+
+        include "x86", "x86_64", "armeabi-v7a", "arm64-v8a"
+        universalApk true
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    buildFeatures {
-        viewBinding true
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources false // Reproducible builds
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    externalNativeBuild {
-        ndkBuild {
-            path "src/main/jni/Android.mk"
-        }
-    }
-    sourceSets {
-        main {
-            jniLibs.srcDirs 'src/main/jni/prebuilt'
+    compileOptions.sourceCompatibility JavaVersion.VERSION_1_9
+    compileOptions.targetCompatibility JavaVersion.VERSION_1_9
+    packagingOptions.jniLibs.useLegacyPackaging false
+    buildFeatures.aidl true
+    buildFeatures.buildConfig true
+    buildTypes.debug {
+        signingConfig signingConfigs.debug
+        postprocessing {
+            removeUnusedCode true
+            removeUnusedResources true
+            obfuscate false
+            optimizeCode true
         }
     }
 }
@@ -57,9 +41,65 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation project(":vterm")
-    implementation 'androidx.navigation:navigation-fragment:2.7.7'
-    implementation 'androidx.navigation:navigation-ui:2.7.7'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    //noinspection DifferentStdlibGradleVersion
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.2'
+    implementation 'androidx.preference:preference:1.2.1'
+    compileOnly project(':shell-loader:stub')
+}
+afterEvaluate {
+    tasks.register("generatePrefs") {
+        //noinspection UnnecessaryQualifiedReference
+        def xml = groovy.xml.DOMBuilder.parse((new StringReader(file('src/main/res/xml/preferences.xml').text)))
+        def preferenceNodes = xml.documentElement.getElementsByTagName("*")
+        def preferences = []
+
+        for (int i = 0; i < preferenceNodes.length; i++) {
+            def node = preferenceNodes.item(i)
+            if (node.nodeName == 'EditTextPreference')
+                preferences << [ type: 'String',  key: node.getAttribute("android:key"), default: node.getAttribute("android:defaultValue") ]
+            else if (node.nodeName == 'SeekBarPreference')
+                preferences << [ type: 'Int', key: node.getAttribute("android:key"), default: node.getAttribute("android:defaultValue") ]
+            else if (node.nodeName == 'ListPreference') {
+                def entries = node.getAttribute("android:entries")
+                def values = node.getAttribute("android:entryValues")
+                preferences << [type: 'List', key: node.getAttribute("android:key"), default: node.getAttribute("android:defaultValue"),
+                                entries: entries.substring(7, entries.length()), values: values.substring(7, values.length())]
+            }
+            else if (node.nodeName == 'SwitchPreferenceCompat')
+                preferences << [ type: 'Boolean',  key: node.getAttribute("android:key"), default: node.getAttribute("android:defaultValue") ]
+        }
+
+        def out = file('build/generated/java/com/vectras/boxvidra/Prefs.java')
+        out.getParentFile().exists() || out.getParentFile().mkdirs()
+        out.delete()
+        out.createNewFile()
+
+        out << 'package com.vectras.boxvidra;\n'
+        out << 'import java.util.HashMap;\n'
+        out << 'import android.content.Context;\n'
+        out << 'import com.vectras.boxvidra.utils.TermuxX11ExtraKeys;\n'
+        out << '\n'
+        out << 'public class Prefs extends LoriePreferences.PrefsProto {\n'
+        preferences.each {
+            if (it.type == 'Int' || it.type == 'Boolean')
+                out << "  public final ${it.type}Preference ${it.key} = new ${it.type}Preference(\"${it.key}\", ${it.default});\n"
+            else if (it.type == 'String')
+                out << "  public final StringPreference ${it.key} = new StringPreference(\"${it.key}\", \"${it.default}\");\n"
+            else if (it.type == 'List')
+                out << "  public final ${it.type}Preference ${it.key} = new ${it.type}Preference(\"${it.key}\", \"${it.default}\", R.array.${it.entries}, R.array.${it.values});\n"
+        }
+        out << '  public final StringPreference extra_keys_config = new StringPreference("extra_keys_config", TermuxX11ExtraKeys.DEFAULT_IVALUE_EXTRA_KEYS);\n'
+        out << '  public final HashMap<String, Preference> keys = new HashMap<>() {{\n'
+        preferences.each { out << '    put("' + it.key + '", ' + it.key + ');\n' }
+        out << '    put("extra_keys_config", extra_keys_config);\n'
+        out << '  }};\n'
+        out << '\n'
+        out << '  public Prefs(Context ctx) {\n'
+        out << '    super(ctx);\n'
+        out << '  }\n'
+        out << '}\n'
+    }
+    android.sourceSets.main.java.srcDirs += 'build/generated/java'
+    preBuild.dependsOn generatePrefs
 }

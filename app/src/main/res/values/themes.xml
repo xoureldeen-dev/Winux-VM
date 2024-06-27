@@ -1,8 +1,0 @@
-<resources>
-    <style name="Base.Theme.VEMU" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="Theme.VEMU" parent="Base.Theme.VEMU" />
-</resources>

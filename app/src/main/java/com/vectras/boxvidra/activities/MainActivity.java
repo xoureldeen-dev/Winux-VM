@@ -3,6 +3,7 @@ package com.vectras.boxvidra.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.system.ErrnoException;
 import android.view.View;
 import android.widget.Button;
 
@@ -11,8 +12,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.vectras.boxvidra.R;
-import com.vectras.boxvidra.X11Activity;
 import com.vectras.vterm.Terminal;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,11 +33,17 @@ public class MainActivity extends AppCompatActivity {
         TextInputEditText startupCommandEditText = findViewById(R.id.startupCommandEditText);
 
         Button btnLaunch = findViewById(R.id.btnLaunch);
-        btnLaunch.setOnClickListener(v -> startActivity(new Intent(activity, X11Activity.class).putExtra("STARTUP_CMD", startupCommandEditText.getText().toString())));
+        btnLaunch.setOnClickListener(v -> startActivity(new Intent(activity, com.vectras.boxvidra.XClientActivity.class).putExtra("STARTUP_CMD", startupCommandEditText.getText().toString())));
 
         terminal = new Terminal(activity);
         terminal.showVterm();
 
+        String filesDir = activity.getFilesDir().getAbsolutePath();
+        try {
+            android.system.Os.setenv("TMPDIR", filesDir + "/distro/tmp", true);
+        } catch (ErrnoException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

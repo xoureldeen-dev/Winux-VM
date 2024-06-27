@@ -164,7 +164,8 @@ public class Terminal {
                     processBuilder.environment().put("TERM", "xterm-256color");
                     processBuilder.environment().put("TMPDIR", "/tmp");
                     processBuilder.environment().put("SHELL", "/bin/sh");
-                    processBuilder.environment().put("DISPLAY", getLocalIpAddress()+":0");
+                    processBuilder.environment().put("DISPLAY", ":0");
+                    processBuilder.environment().put("XKB_CONFIG_ROOT", filesDir + "/distro/share/X11/xkb");
 
                     // Example PRoot command; replace 'libproot.so' and other paths as needed
                     String[] prootCommand = {
