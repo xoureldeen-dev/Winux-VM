@@ -13,7 +13,6 @@ android.applicationVariants.configureEach { outputs.configureEach { outputFileNa
 
 def signingConfig = project(':app').android.signingConfigs.debug
 def keyStore = java.security.KeyStore.getInstance(java.security.KeyStore.getDefaultType())
-keyStore.load(new FileInputStream(signingConfig.storeFile), signingConfig.keyPassword.toCharArray())
 
 android.defaultConfig.buildConfigField "String", "APPLICATION_ID", "\"com.vectras.boxvidra\""
 android.defaultConfig.buildConfigField "String", "logTag", "\"Termux:X11 loader\""
