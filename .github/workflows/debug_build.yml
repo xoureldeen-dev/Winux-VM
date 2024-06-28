@@ -33,7 +33,10 @@ jobs:
 
           restore-keys: |
             ${{ runner.os }}-gradle-
-
+            
+    - name: Chmod scripts
+      run: chmod +x ./gradlew && chmod +x ./build_termux_package
+      
     - name: Build
       run: ./gradlew assembleDebug
     - name: Build companion package
