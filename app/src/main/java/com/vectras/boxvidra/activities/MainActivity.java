@@ -1,11 +1,13 @@
 package com.vectras.boxvidra.activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.system.ErrnoException;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -41,10 +43,30 @@ public class MainActivity extends AppCompatActivity {
         {
             try {
                 TermuxX11.main(new String[]{":0"});
-                terminal.showVterm();
             } catch (ErrnoException e) {
                 throw new RuntimeException(e);
+            } finally {
+                terminal.executeShellCommand(startupCommandEditText.getText().toString());
+                try {
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName("com.termux.x11", "com.termux.x11.MainActivity"));
+
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "Target activity not found.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed to start the x11 activity.", Toast.LENGTH_SHORT).show();
+                }
             }
+
+        });
+        Button btnVterm = findViewById(R.id.btnVterm);
+        btnVterm.setOnClickListener(v ->
+        {
+            terminal.showVterm();
         });
 
         FileUtils.copyFolderFromAssets(getApplicationContext(), "X11", getApplicationContext().getFilesDir() + "/X11");

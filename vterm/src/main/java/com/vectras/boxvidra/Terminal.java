@@ -153,7 +153,7 @@ public class Terminal {
                     String filesDir = activity.getFilesDir().getAbsolutePath();
                     String nativeLibDir = activity.getApplicationInfo().nativeLibraryDir;
                     File tmpDir = new File(activity.getCacheDir() + "/tmp/");
-                    File xkbConfigRoot = new File(activity.getFilesDir() + "/X11/xkb");
+                    File xkbConfigRoot = new File(filesDir + "/distro/share/X11/xkb");
 
                     // Setup environment for the PRoot process
                     processBuilder.environment().put("PROOT_TMP_DIR", tmpDir.toString());
