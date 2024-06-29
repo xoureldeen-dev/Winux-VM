@@ -152,9 +152,11 @@ public class Terminal {
                     // Adjust these environment variables as necessary for your app
                     String filesDir = activity.getFilesDir().getAbsolutePath();
                     String nativeLibDir = activity.getApplicationInfo().nativeLibraryDir;
+                    File tmpDir = new File(activity.getCacheDir() + "/tmp/");
+                    File xkbConfigRoot = new File(activity.getFilesDir() + "/X11/xkb");
 
                     // Setup environment for the PRoot process
-                    processBuilder.environment().put("PROOT_TMP_DIR", filesDir + "/tmp");
+                    processBuilder.environment().put("PROOT_TMP_DIR", tmpDir.toString());
                     processBuilder.environment().put("PROOT_LOADER", nativeLibDir + "/libproot-loader.so");
                     processBuilder.environment().put("PROOT_LOADER_32", nativeLibDir + "/libproot-loader32.so");
 
@@ -162,10 +164,10 @@ public class Terminal {
                     processBuilder.environment().put("USER", "root");
                     processBuilder.environment().put("PATH", "/bin:/usr/bin:/sbin:/usr/sbin");
                     processBuilder.environment().put("TERM", "xterm-256color");
-                    processBuilder.environment().put("TMPDIR", "/tmp");
+                    processBuilder.environment().put("TMPDIR", tmpDir.toString());
                     processBuilder.environment().put("SHELL", "/bin/sh");
-                    processBuilder.environment().put("DISPLAY", ":0");
-                    processBuilder.environment().put("XKB_CONFIG_ROOT", filesDir + "/distro/share/X11/xkb");
+                    processBuilder.environment().put("DISPLAY", "/data/data/com.vectras.boxvidra/cache/tmp/.X11-unix/X0");
+                    processBuilder.environment().put("XKB_CONFIG_ROOT", xkbConfigRoot.getAbsolutePath());
 
                     // Example PRoot command; replace 'libproot.so' and other paths as needed
                     String[] prootCommand = {

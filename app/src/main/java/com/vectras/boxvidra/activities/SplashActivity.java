@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.vectras.boxvidra.R;
+import com.vectras.boxvidra.utils.FileUtils;
 import com.vectras.vterm.view.ZoomableTextView;
 
 import java.io.BufferedReader;
@@ -156,7 +157,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         progressBar.setVisibility(View.VISIBLE);
         String filesDir = activity.getFilesDir().getAbsolutePath();
 
-        File tmpDir = new File(filesDir + "/tmp");
+        File tmpDir = new File(activity.getCacheDir() + "/tmp/");
         if (!tmpDir.exists()) {
             tmpDir.mkdirs();
         }
@@ -167,6 +168,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                 " echo 'Starting setup...';" +
                 " tar -xzf " + obbFile.getAbsolutePath() + " -C " + distroDir.getAbsolutePath() + ";" +
                 " echo \"installation successful! xssFjnj58Id\"");
+        FileUtils.copyFolderFromAssets(getApplicationContext(), "X11", getApplicationContext().getFilesDir() + "/X11");
     }
 
 }
