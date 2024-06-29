@@ -22,7 +22,7 @@ public class TermuxX11 {
         File xkbConfigRoot = new File(filesDir + "/distro/share/X11/xkb");
         if (!xkbConfigRoot.exists())
             throw new RuntimeException("XKB_CONFIG_ROOT not found: " + xkbConfigRoot);
-        Os.setenv("XKB_CONFIG_ROOT", xkbConfigRoot.toString(), true);
+        Os.setenv("XKB_CONFIG_ROOT", xkbConfigRoot.getAbsolutePath(), true);
 
         File tmpDir = new File(VectrasApp.instance.getCacheDir() + "/tmp/");
         deleteRecursively(tmpDir);

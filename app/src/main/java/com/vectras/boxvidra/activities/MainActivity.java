@@ -45,21 +45,21 @@ public class MainActivity extends AppCompatActivity {
                 TermuxX11.main(new String[]{":0"});
             } catch (ErrnoException e) {
                 throw new RuntimeException(e);
-            } finally {
-                terminal.executeShellCommand(startupCommandEditText.getText().toString());
-                try {
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("com.termux.x11", "com.termux.x11.MainActivity"));
+            }
 
-                    if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(this, "Target activity not found.", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "Failed to start the x11 activity.", Toast.LENGTH_SHORT).show();
+            terminal.executeShellCommand(startupCommandEditText.getText().toString());
+            try {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.termux.x11", "com.termux.x11.MainActivity"));
+
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Target activity not found.", Toast.LENGTH_SHORT).show();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to start the x11 activity.", Toast.LENGTH_SHORT).show();
             }
 
         });

@@ -157,11 +157,6 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         progressBar.setVisibility(View.VISIBLE);
         String filesDir = activity.getFilesDir().getAbsolutePath();
 
-        File tmpDir = new File(activity.getCacheDir() + "/tmp/");
-        if (!tmpDir.exists()) {
-            tmpDir.mkdirs();
-        }
-
         File distroDir = new File(filesDir + "/distro");
         File obbFile = new File(activity.getObbDir() + "/main.1.com.vectras.boxvidra.obb");
         executeShellCommand("set -e;" +
