@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VTERM.iml" filepath="$PROJECT_DIR$/.idea/modules/VTERM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/VTERM.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/VTERM.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/VTERM.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/VTERM.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/VTERM.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/VTERM.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/VTERM.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/VTERM.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-emulator/VTERM.terminal-emulator.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.main.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/terminal-view/VTERM.terminal-view.unitTest.iml" />
+    </modules>
+  </component>
+</project>
