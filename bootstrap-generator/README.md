@@ -2,7 +2,7 @@
 `apk add binutils tar xz`
 
 ## packages to build:
-`bash proot proot-distro xkeyboard-config`
+`bash proot proot-distro xkeyboard-config pulseaudio`
 
 ### how to use:
 - `1 - install #packages required to run build.sh.`
