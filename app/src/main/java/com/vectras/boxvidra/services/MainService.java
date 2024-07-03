@@ -38,10 +38,10 @@ public class MainService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Boxvidra")
                 .setContentText("Boxvidra running in background.")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_main_service_icon)
                 .build();
 
-        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/pd");
+        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=${TMPDIR} && env DISPLAY=:0 xfce4-session'");
 
         startForeground(NOTIFICATION_ID, notification);
     }

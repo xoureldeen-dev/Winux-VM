@@ -55,6 +55,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/termuxx11_service_no" />
+
+                    <TextView
+                        android:id="@+id/tvIsXfce4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/xfce4_service_no" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

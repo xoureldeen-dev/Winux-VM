@@ -24,9 +24,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static Activity activity;
     MaterialButton startX11Btn, startXfce4Btn, openTerminalBtn;
 
-    public static TextView termuxX11TextView, tvLogger;
+    public static TextView termuxX11TextView, xfce4TextView, tvLogger;
 
     boolean isX11Started = false;
+
+    boolean isXFCE4Started = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         openTerminalBtn.setOnClickListener(this);
 
         termuxX11TextView = findViewById(R.id.tvIsTermuxX11);
+        xfce4TextView = findViewById(R.id.tvIsXfce4);
         tvLogger = findViewById(R.id.tvLogger);
         tvLogger.setTypeface(Typeface.MONOSPACE);
 
@@ -51,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             termuxX11TextView.setText(R.string.termuxx11_service_yes);
         } else {
             termuxX11TextView.setText(R.string.termuxx11_service_no);
+        }
+
+        if (isXFCE4Started) {
+            xfce4TextView.setText(R.string.xfce4_service_yes);
+        } else {
+            xfce4TextView.setText(R.string.xfce4_service_no);
         }
 
         View decorView = getWindow().getDecorView();
@@ -79,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 activity.startService(serviceIntent);
             }
+            isXFCE4Started = true;
+            startXfce4Btn.setEnabled(false);
+            xfce4TextView.setText(R.string.xfce4_service_yes);
         } else if (id == R.id.openTerminal) {
             startActivity(new Intent(activity, TermuxActivity.class));
         }

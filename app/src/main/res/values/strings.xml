@@ -67,4 +67,6 @@
     <string name="termuxx11_service_no">TermuxX11 Service: no</string>
     <string name="logger_text">No logs yet!\nWelcome to vidra :)</string>
     <string name="open_termimal">Open Termimal</string>
+    <string name="xfce4_service_no">Xfce4 Service: no</string>
+    <string name="xfce4_service_yes">Xfce4 Service: yes</string>
 </resources>
