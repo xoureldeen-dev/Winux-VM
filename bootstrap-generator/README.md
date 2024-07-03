@@ -2,7 +2,7 @@
 `apk add binutils tar xz`
 
 ##packages to build:
-`bash xfce4 xfce4-goodies pacman pulseaudio zenity wget xorg-xrandr`
+`bash proot proot-distro xkeyboard-config`
 
 how to use:
 `1 - install #packages required to run build.sh.`

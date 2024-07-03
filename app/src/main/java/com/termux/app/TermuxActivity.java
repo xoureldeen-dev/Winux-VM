@@ -212,9 +212,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         mSettings = new TermuxPreferences(this);
         mIsUsingBlackUI = mSettings.isUsingBlackUI();
         if (mIsUsingBlackUI) {
-            this.setTheme(R.style.Theme_Vterm_Black);
+            this.setTheme(R.style.Theme_Vectras_Black);
         } else {
-            this.setTheme(R.style.Theme_Vterm);
+            this.setTheme(R.style.Theme_Vectras);
         }
 
         super.onCreate(bundle);

@@ -13,9 +13,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-
-# Project exclude paths
-/terminal-emulator/build/
-/terminal-emulator/build/intermediates/javac/debug/classes/
-/terminal-view/build/
-/terminal-view/build/intermediates/javac/debug/classes/

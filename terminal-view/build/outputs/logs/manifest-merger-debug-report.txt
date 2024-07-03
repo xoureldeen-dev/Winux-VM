@@ -1,0 +1,14 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml:1:1-12
+INJECTED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml:1:1-12
+	package
+		INJECTED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml
+uses-sdk
+INJECTED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml
+INJECTED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\dev\Boxvidra-Android\terminal-view\src\main\AndroidManifest.xml

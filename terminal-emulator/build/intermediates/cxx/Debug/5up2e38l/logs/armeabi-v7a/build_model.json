@@ -1,0 +1,165 @@
+{
+  "info": {
+    "name": "armeabi-v7a",
+    "bitness": 32,
+    "isDefault": true,
+    "isDeprecated": false,
+    "architecture": "arm",
+    "triple": "arm-linux-androideabi",
+    "llvmTriple": "armv7-none-linux-androideabi"
+  },
+  "cxxBuildFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\.cxx\\Debug\\5up2e38l\\armeabi-v7a",
+  "soFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\intermediates\\cxx\\Debug\\5up2e38l\\obj\\local\\armeabi-v7a",
+  "soRepublishFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\intermediates\\ndkBuild\\debug\\obj\\local\\armeabi-v7a",
+  "abiPlatformVersion": 21,
+  "variant": {
+    "buildSystemArgumentList": [],
+    "cFlagsList": [],
+    "cppFlagsList": [],
+    "variantName": "debug",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "armeabi-v7a",
+      "arm64-v8a",
+      "x86",
+      "x86_64"
+    ],
+    "buildTargetSet": [],
+    "implicitBuildTargetSet": [],
+    "cmakeSettingsConfiguration": "android-gradle-plugin-predetermined-name",
+    "module": {
+      "cxxFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\.cxx",
+      "intermediatesBaseFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\intermediates",
+      "intermediatesFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\intermediates\\cxx",
+      "gradleModulePathName": ":terminal-emulator",
+      "moduleRootFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator",
+      "moduleBuildFile": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build.gradle",
+      "makeFile": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\src\\main\\jni\\Android.mk",
+      "buildSystem": "NDK_BUILD",
+      "ndkFolder": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125",
+      "ndkFolderBeforeSymLinking": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125",
+      "ndkVersion": "26.1.10909125",
+      "ndkSupportedAbiList": [
+        "armeabi-v7a",
+        "arm64-v8a",
+        "x86",
+        "x86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "armeabi-v7a",
+        "arm64-v8a",
+        "x86",
+        "x86_64"
+      ],
+      "ndkDefaultStl": "SYSTEM",
+      "ndkMetaPlatforms": {
+        "min": 21,
+        "max": 34,
+        "aliases": {
+          "20": 19,
+          "25": 24,
+          "J": 16,
+          "J-MR1": 17,
+          "J-MR2": 18,
+          "K": 19,
+          "L": 21,
+          "L-MR1": 22,
+          "M": 23,
+          "N": 24,
+          "N-MR1": 24,
+          "O": 26,
+          "O-MR1": 27,
+          "P": 28,
+          "Q": 29,
+          "R": 30,
+          "S": 31,
+          "Sv2": 32,
+          "Tiramisu": 33,
+          "UpsideDownCake": 34
+        }
+      },
+      "ndkMetaAbiList": [
+        {
+          "name": "armeabi-v7a",
+          "bitness": 32,
+          "isDefault": true,
+          "isDeprecated": false,
+          "architecture": "arm",
+          "triple": "arm-linux-androideabi",
+          "llvmTriple": "armv7-none-linux-androideabi"
+        },
+        {
+          "name": "arm64-v8a",
+          "bitness": 64,
+          "isDefault": true,
+          "isDeprecated": false,
+          "architecture": "arm64",
+          "triple": "aarch64-linux-android",
+          "llvmTriple": "aarch64-none-linux-android"
+        },
+        {
+          "name": "x86",
+          "bitness": 32,
+          "isDefault": true,
+          "isDeprecated": false,
+          "architecture": "x86",
+          "triple": "i686-linux-android",
+          "llvmTriple": "i686-none-linux-android"
+        },
+        {
+          "name": "x86_64",
+          "bitness": 64,
+          "isDefault": true,
+          "isDeprecated": false,
+          "architecture": "x86_64",
+          "triple": "x86_64-linux-android",
+          "llvmTriple": "x86_64-none-linux-android"
+        }
+      ],
+      "cmakeToolchainFile": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\build\\cmake\\android.toolchain.cmake",
+      "stlSharedObjectMap": {
+        "LIBCXX_SHARED": {
+          "armeabi-v7a": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\arm-linux-androideabi\\libc++_shared.so",
+          "arm64-v8a": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\aarch64-linux-android\\libc++_shared.so",
+          "x86": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\i686-linux-android\\libc++_shared.so",
+          "x86_64": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\libc++_shared.so"
+        },
+        "LIBCXX_STATIC": {},
+        "NONE": {},
+        "SYSTEM": {}
+      },
+      "project": {
+        "rootBuildGradleFolder": "D:\\dev\\Boxvidra-Android",
+        "sdkFolder": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk",
+        "isBuildOnlyTargetAbiEnabled": true,
+        "isCmakeBuildCohabitationEnabled": false,
+        "isPrefabEnabled": false
+      },
+      "outputOptions": [],
+      "hasBuildTimeInformation": true
+    },
+    "prefabClassPaths": [],
+    "prefabPackages": [],
+    "prefabPackageConfigurations": [],
+    "stlType": "system",
+    "optimizationTag": "Debug"
+  },
+  "buildSettings": {
+    "environmentVariables": []
+  },
+  "prefabFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\.cxx\\Debug\\5up2e38l\\prefab\\armeabi-v7a",
+  "isActiveAbi": true,
+  "fullConfigurationHash": "5up2e38l291k5m5l4x2q6u1i5x5s315816c313y4f1e5x173d5j6p1l32i28",
+  "fullConfigurationHashKey": "# Values used to calculate the hash in this folder name.\n# Should not depend on the absolute path of the project itself.\n#   - AGP: 8.4.1.\n#   - $NDK is the path to NDK 26.1.10909125.\n#   - $PROJECT is the path to the parent folder of the root Gradle build file.\n#   - $ABI is the ABI to be built with. The specific value doesn\u0027t contribute to the value of the hash.\n#   - $HASH is the hash value computed from this text.\nNDK_PROJECT_PATH\u003dnull\nAPP_BUILD_SCRIPT\u003d$PROJECT/terminal-emulator/src/main/jni/Android.mk\nAPP_ABI\u003d$ABI\nNDK_ALL_ABIS\u003d$ABI\nNDK_DEBUG\u003d1\nAPP_PLATFORM\u003dandroid-21\nNDK_OUT\u003d$PROJECT/terminal-emulator/build/intermediates/cxx/Debug/$HASH/obj\nNDK_LIBS_OUT\u003d$PROJECT/terminal-emulator/build/intermediates/cxx/Debug/$HASH/lib",
+  "configurationArguments": [
+    "NDK_PROJECT_PATH\u003dnull",
+    "APP_BUILD_SCRIPT\u003dD:\\dev\\Boxvidra-Android\\terminal-emulator\\src\\main\\jni\\Android.mk",
+    "APP_ABI\u003darmeabi-v7a",
+    "NDK_ALL_ABIS\u003darmeabi-v7a",
+    "NDK_DEBUG\u003d1",
+    "APP_PLATFORM\u003dandroid-21",
+    "NDK_OUT\u003dD:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\intermediates\\cxx\\Debug\\5up2e38l/obj",
+    "NDK_LIBS_OUT\u003dD:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\intermediates\\cxx\\Debug\\5up2e38l/lib"
+  ],
+  "intermediatesParentFolder": "D:\\dev\\Boxvidra-Android\\terminal-emulator\\build\\intermediates\\cxx\\Debug\\5up2e38l"
+}

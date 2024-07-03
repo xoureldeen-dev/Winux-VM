@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.vectras.boxvidra">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -22,7 +21,7 @@
         android:supportsRtl="true"
         android:isGame="true"
         android:extractNativeLibs="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.Vectras">
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
@@ -34,6 +33,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activities.MainActivity"
+            android:launchMode="singleTask"/>
+
         <!--TERMUX-->
         <activity android:name="com.termux.app.TermuxActivity"
             android:label="@string/application_name"
@@ -41,7 +44,13 @@
             android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
-            android:theme="@style/Theme.Vterm"/>
+            android:theme="@style/Theme.Vectras"/>
+
+        <activity
+            android:name=".VectrasApp$CrashActivity"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:label="App Crash" />
 
         <service android:name="com.termux.app.TermuxService"
             android:exported="false"/>
@@ -50,6 +59,10 @@
             android:exported="true"
             android:stopWithTask="true">
         </service>
+
+        <service
+            android:name=".services.MainService"
+            android:exported="false"/>
 
     </application>
 

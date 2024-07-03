@@ -19,7 +19,7 @@ public class TermuxX11 {
     private static final String TARGET_CLASS_ID = "com.termux.x11.CmdEntryPoint";
 
     public static void main(String[] args) throws ErrnoException {
-        String filesDir = VectrasApp.instance.getFilesDir().getAbsolutePath();
+        String filesDir = VectrasApp.vectrasapp.getFilesDir().getAbsolutePath();
         File xkbConfigRoot = new File(filesDir + "/usr/share/X11/xkb");
         if (!xkbConfigRoot.exists())
             throw new RuntimeException("XKB_CONFIG_ROOT not found: " + xkbConfigRoot);
@@ -31,7 +31,7 @@ public class TermuxX11 {
         Os.setenv("TMPDIR", tmpDir.toString(), true);
 
         try {
-            PackageInfo targetInfo = VectrasApp.instance.getPackageManager().getPackageInfo(TARGET_APP_ID, 0);
+            PackageInfo targetInfo = VectrasApp.vectrasapp.getPackageManager().getPackageInfo(TARGET_APP_ID, 0);
             if (targetInfo == null) throw new RuntimeException("Termux:X11 not installed");
             Log.i(TAG, "Running " + targetInfo.applicationInfo.sourceDir + "::" + TARGET_CLASS_ID + "::main of " + TARGET_APP_ID + " application");
             Class<?> targetClass = Class.forName(

@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 android {
+    namespace "com.termux.view"
     compileSdkVersion 31
 
     dependencies {

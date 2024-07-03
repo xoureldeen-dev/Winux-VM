@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.termux.app.TermuxActivity;
 import com.vectras.boxvidra.R;
 import com.vectras.boxvidra.utils.FileUtils;
 import com.vectras.boxvidra.view.ZoomableTextView;
@@ -52,7 +51,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         }
         File[] distDirList = distroDir.listFiles();
         if (distDirList.length != 0) {
-            startActivity(new Intent(this, TermuxActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         } else {
             if (!obbFile.exists()) {
@@ -80,7 +79,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         vterm.append(textToAdd);
 
         if (textToAdd.contains("xssFjnj58Id")) {
-            startActivity(new Intent(this, TermuxActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         }
 

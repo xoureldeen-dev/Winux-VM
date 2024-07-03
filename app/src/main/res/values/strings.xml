@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Vterm</string>
+    <string name="app_name">Boxvidra</string>
 
     <!--======================TERMUX STRINGS====================-->
     <string name="application_name">Vterm</string>
@@ -57,10 +57,14 @@
     <string name="launch">Launch</string>
     <string name="startup_command">Startup Command</string>
     <string name="default_startupCmd">startxfce4</string>
-    <string name="distro_version">Ubuntu 24.04 LTS</string>
+    <string name="distro_version">24.04 LTS</string>
     <string name="setup_boxvidra">SETUP BOXVIDRA (DON\'T EXIT THE APP)</string>
     <string name="go_ahead">GO AHEAD</string>
     <string name="show_vterm">Show vterm</string>
     <string name="start_x11">Start X11</string>
-
+    <string name="start_xfce4">Start XFCE4</string>
+    <string name="termuxx11_service_yes">TermuxX11 Service: yes</string>
+    <string name="termuxx11_service_no">TermuxX11 Service: no</string>
+    <string name="logger_text">No logs yet!\nWelcome to vidra :)</string>
+    <string name="open_termimal">Open Termimal</string>
 </resources>
