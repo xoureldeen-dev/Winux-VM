@@ -1,7 +1,11 @@
 package com.vectras.boxvidra.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Build;
 import android.system.ErrnoException;
@@ -11,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 import com.termux.app.TermuxActivity;
@@ -71,15 +76,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.startX11) {
-            try {
-                isX11Started = true;
-                startX11Btn.setEnabled(false);
-                termuxX11TextView.setText(R.string.termuxx11_service_yes);
-                TermuxX11.main(new String[]{":0"});
-            } catch (ErrnoException e) {
-                isX11Started = false;
-                startX11Btn.setEnabled(true);
-                termuxX11TextView.setText(R.string.termuxx11_service_no);
+            if (!isTermuxX11Installed()) {
+                showInstallTermuxX11Dialog();
+            } else {
+                startTermuxX11();
             }
         } else if (id == R.id.startXfce4) {
             Intent serviceIntent = new Intent(requireActivity(), MainService.class);
@@ -95,4 +95,42 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             startActivity(new Intent(requireActivity(), TermuxActivity.class));
         }
     }
+    private boolean isTermuxX11Installed() {
+        PackageManager pm = requireContext().getPackageManager();
+        try {
+            PackageInfo info = pm.getPackageInfo("com.termux.x11", 0);
+            return info != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private void showInstallTermuxX11Dialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Termux X11 Not Installed")
+                .setMessage("Termux X11 is required to start X11. Would you like to install it now?")
+                .setPositiveButton("Install", (dialog, which) -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("https://github.com/termux/termux-x11/releases"));
+                    startActivity(intent);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void startTermuxX11() {
+        try {
+            isX11Started = true;
+            startX11Btn.setEnabled(false);
+            termuxX11TextView.setText(R.string.termuxx11_service_yes);
+            TermuxX11.main(new String[]{":0"});
+        } catch (ErrnoException e) {
+            isX11Started = false;
+            startX11Btn.setEnabled(true);
+            termuxX11TextView.setText(R.string.termuxx11_service_no);
+        }
+    }
+
+
+
 }

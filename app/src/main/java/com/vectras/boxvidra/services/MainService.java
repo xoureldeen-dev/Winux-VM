@@ -55,7 +55,7 @@ public class MainService extends Service {
                 .setSmallIcon(R.drawable.ic_main_service_icon)
                 .build();
 
-        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=${TMPDIR} && env DISPLAY=:0 xfce4-session'");
+        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu-lts --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=${TMPDIR} && env DISPLAY=:0 xfce4-session'");
 
         startForeground(NOTIFICATION_ID, notification);
     }
