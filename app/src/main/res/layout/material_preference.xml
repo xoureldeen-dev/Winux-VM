@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/CardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:padding="18dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@android:id/summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="14sp" />
+
+</androidx.cardview.widget.CardView>

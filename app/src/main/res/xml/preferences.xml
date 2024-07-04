@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/general">
+
+        <Preference
+            android:key="key_environment"
+            android:title="Manage Environments"
+            android:fragment="com.vectras.boxvidra.fragments.EnvironmentVariablesFragment"
+            android:layout="@layout/material_preference"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

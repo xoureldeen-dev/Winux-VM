@@ -57,7 +57,7 @@
     <string name="launch">Launch</string>
     <string name="startup_command">Startup Command</string>
     <string name="default_startupCmd">startxfce4</string>
-    <string name="distro_version">24.04 LTS</string>
+    <string name="distro_version">22.04 LTS</string>
     <string name="setup_boxvidra">SETUP BOXVIDRA (DON\'T EXIT THE APP)</string>
     <string name="go_ahead">GO AHEAD</string>
     <string name="show_vterm">Show vterm</string>
@@ -69,4 +69,8 @@
     <string name="open_termimal">Open Termimal</string>
     <string name="xfce4_service_no">Xfce4 Service: no</string>
     <string name="xfce4_service_yes">Xfce4 Service: yes</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_value">Enter Value</string>
+    <string name="add">Add</string>
+    <string name="general">General</string>
 </resources>

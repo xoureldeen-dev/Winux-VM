@@ -2,6 +2,7 @@
 
 # Directory where you want to extract the contents
 output_dir="./extracted_contents"
+bootstrap='bootstrap-2447-arm64-v8a.tar.gz'
 
 # Ensure the output directory exists
 mkdir -p "$output_dir"
@@ -48,7 +49,6 @@ if [ -f "./extracted_contents" ]; then
     
 echo "Creating bootstraps."
 cd ./extracted_contents/data/data/com.vectras.boxvidra/files
-tar czvf ../../../../../libbootstrap.so *
+tar czvf ../../../../../$bootstrap *
 cd
-rm -r ./extracted_contents
-echo "Create bootstrap complete (libbootstrap.so)."
+echo "Create bootstrap complete ($bootstrap)."

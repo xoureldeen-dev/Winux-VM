@@ -42,7 +42,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         inBtn = findViewById(R.id.btnInstall);
         inBtn.setOnClickListener(this);
 
-        File obbFile = new File(activity.getObbDir() + "/main.1.com.vectras.boxvidra.obb");
+        File obbFile = new File(activity.getObbDir() + "/bootstrap-2447-arm64-v8a.tar.gz");
 
         String filesDir = activity.getFilesDir().getAbsolutePath();
         File distroDir = new File(filesDir + "/usr");
@@ -58,7 +58,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                 new AlertDialog.Builder(activity)
                         .setTitle("Obb file not found!")
                         .setCancelable(false)
-                        .setMessage("please download and copy main.1.com.vectras.boxvidra.obb to 'Android/obb' dir")
+                        .setMessage("please download and copy bootstrap-2447-arm64-v8a.tar.gz to 'Android/obb' dir")
                         .show();
             }
         }
@@ -158,7 +158,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         String filesDir = activity.getFilesDir().getAbsolutePath();
 
         File distroDir = new File(filesDir + "/usr");
-        File obbFile = new File(activity.getObbDir() + "/main.1.com.vectras.boxvidra.obb");
+        File obbFile = new File(activity.getObbDir() + "/bootstrap-2447-arm64-v8a.tar.gz");
         executeShellCommand("set -e;" +
                 " echo 'Starting setup...';" +
                 " tar -xzf " + obbFile.getAbsolutePath() + " -C " + distroDir.getAbsolutePath() + "/../;" +

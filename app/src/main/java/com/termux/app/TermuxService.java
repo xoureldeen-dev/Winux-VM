@@ -144,31 +144,15 @@ public final class TermuxService extends Service implements SessionChangedCallba
             Uri executableUri = intent.getData();
             String executablePath = (executableUri == null ? null : executableUri.getPath());
 
-            String[] arguments = {
-                    "proot",
-                    "--kill-on-exit",
-                    "--link2symlink",
-                    "-0",
-                    "-r", PREFIX_PATH + "/distro",
-                    "-b", "/dev",
-                    "-b", "/proc",
-                    "-b", "/sys",
-                    "-b", "/sdcard",
-                    "-b", "/storage",
-                    "-b", "/data",
-                    "-w", "/root",
-                    "/bin/bash",
-                    "--login"
-            };
             String cwd = intent.getStringExtra(EXTRA_CURRENT_WORKING_DIRECTORY);
 
             if (intent.getBooleanExtra(EXTRA_EXECUTE_IN_BACKGROUND, false)) {
-                BackgroundJob task = new BackgroundJob(cwd, executablePath, arguments, this, intent.getParcelableExtra("pendingIntent"));
+                BackgroundJob task = new BackgroundJob(cwd, executablePath, null, this, intent.getParcelableExtra("pendingIntent"));
                 mBackgroundTasks.add(task);
                 updateNotification();
             } else {
                 boolean failsafe = intent.getBooleanExtra(TermuxActivity.TERMUX_FAILSAFE_SESSION_ACTION, false);
-                TerminalSession newSession = createTermSession(executablePath, arguments, cwd, failsafe);
+                TerminalSession newSession = createTermSession(executablePath, null, cwd, failsafe);
 
                 // Transform executable path to session name, e.g. "/bin/do-something.sh" => "do something.sh".
                 if (executablePath != null) {
