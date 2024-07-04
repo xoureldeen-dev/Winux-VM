@@ -41,7 +41,7 @@
                         android:id="@+id/tvIsXfce4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/xfce4_service_no" />
+                        android:text="@string/boxvidra_service_no" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -98,11 +98,11 @@
 
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/startXfce4"
+                        android:id="@+id/startVidra"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/start_xfce4"
+                        android:text="@string/start_vidra"
                         app:cornerRadius="4dp"
                         app:strokeColor="?attr/colorPrimary" />
 

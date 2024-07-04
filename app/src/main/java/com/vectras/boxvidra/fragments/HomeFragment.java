@@ -30,7 +30,7 @@ import static android.os.Build.VERSION.SDK_INT;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
-    private MaterialButton startX11Btn, startXfce4Btn, openTerminalBtn, stopX11Btn;
+    private MaterialButton startX11Btn, startVidraBtn, openTerminalBtn, stopX11Btn;
     private TextView termuxX11TextView, xfce4TextView, tvLogger;
 
     private boolean isX11Started = false;
@@ -54,8 +54,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         stopX11Btn = view.findViewById(R.id.stopX11);
         stopX11Btn.setOnClickListener(this);
 
-        startXfce4Btn = view.findViewById(R.id.startXfce4);
-        startXfce4Btn.setOnClickListener(this);
+        startVidraBtn = view.findViewById(R.id.startVidra);
+        startVidraBtn.setOnClickListener(this);
 
         openTerminalBtn = view.findViewById(R.id.openTerminal);
         openTerminalBtn.setOnClickListener(this);
@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         } else if (id == R.id.stopX11) {
             stopTermuxX11();
-        } else if (id == R.id.startXfce4) {
+        } else if (id == R.id.startVidra) {
             Intent serviceIntent = new Intent(requireActivity(), MainService.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 requireActivity().startForegroundService(serviceIntent);
@@ -89,8 +89,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 requireActivity().startService(serviceIntent);
             }
             isXFCE4Started = true;
-            startXfce4Btn.setEnabled(false);
-            xfce4TextView.setText(R.string.xfce4_service_yes);
+            startVidraBtn.setEnabled(false);
+            xfce4TextView.setText(R.string.boxvidra_service_yes);
         } else if (id == R.id.openTerminal) {
             startActivity(new Intent(requireActivity(), TermuxActivity.class));
         }
@@ -110,9 +110,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         // Update XFCE4 status
         if (isXFCE4Started) {
-            xfce4TextView.setText(R.string.xfce4_service_yes);
+            xfce4TextView.setText(R.string.boxvidra_service_yes);
         } else {
-            xfce4TextView.setText(R.string.xfce4_service_no);
+            xfce4TextView.setText(R.string.boxvidra_service_no);
         }
     }
 
