@@ -45,7 +45,7 @@ public class MainService extends Service {
                 .setSmallIcon(R.drawable.ic_main_service_icon)
                 .build();
 
-        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu-lts --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=${TMPDIR} && env DISPLAY=:0 xfce4-session'");
+        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu-lts --shared-tmp -- /bin/bash -c  'xfce4-session'");
 
         startForeground(NOTIFICATION_ID, notification);
     }
@@ -66,6 +66,9 @@ public class MainService extends Service {
                 processBuilder.environment().put("PATH", TermuxService.PREFIX_PATH + "/bin");
                 processBuilder.environment().put("LD_LIBRARY_PATH", TermuxService.PREFIX_PATH + "/libs");
                 processBuilder.environment().put("HOME", TermuxService.HOME_PATH);
+                processBuilder.environment().put("PULSE_SERVER", "127.0.0.1");
+                processBuilder.environment().put("XDG_RUNTIME_DIR", "${TMPDIR}");
+                processBuilder.environment().put("DISPLAY", ":0");
 
                 processBuilder.environment().putAll(parseEnvironmentVariables(envArray));
 
