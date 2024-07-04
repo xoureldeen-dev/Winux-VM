@@ -1,20 +1,23 @@
 package com.vectras.boxvidra.fragments;
 
-import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
 import android.system.ErrnoException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
@@ -27,11 +30,13 @@ import static android.os.Build.VERSION.SDK_INT;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
-    public static MaterialButton startX11Btn, startXfce4Btn, openTerminalBtn;
-    public static TextView termuxX11TextView, xfce4TextView, tvLogger;
+    private MaterialButton startX11Btn, startXfce4Btn, openTerminalBtn, stopX11Btn;
+    private TextView termuxX11TextView, xfce4TextView, tvLogger;
 
     private boolean isX11Started = false;
     private boolean isXFCE4Started = false;
+
+    private BroadcastReceiver logBroadcastReceiver;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -46,6 +51,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         startX11Btn = view.findViewById(R.id.startX11);
         startX11Btn.setOnClickListener(this);
 
+        stopX11Btn = view.findViewById(R.id.stopX11);
+        stopX11Btn.setOnClickListener(this);
+
         startXfce4Btn = view.findViewById(R.id.startXfce4);
         startXfce4Btn.setOnClickListener(this);
 
@@ -57,17 +65,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         tvLogger = view.findViewById(R.id.tvLogger);
         tvLogger.setTypeface(Typeface.MONOSPACE);
 
-        if (isX11Started) {
-            termuxX11TextView.setText(R.string.termuxx11_service_yes);
-        } else {
-            termuxX11TextView.setText(R.string.termuxx11_service_no);
-        }
-
-        if (isXFCE4Started) {
-            xfce4TextView.setText(R.string.xfce4_service_yes);
-        } else {
-            xfce4TextView.setText(R.string.xfce4_service_no);
-        }
+        updateUI(); // Update UI based on current states
 
         return view;
     }
@@ -81,9 +79,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             } else {
                 startTermuxX11();
             }
+        } else if (id == R.id.stopX11) {
+            stopTermuxX11();
         } else if (id == R.id.startXfce4) {
             Intent serviceIntent = new Intent(requireActivity(), MainService.class);
-            if (SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 requireActivity().startForegroundService(serviceIntent);
             } else {
                 requireActivity().startService(serviceIntent);
@@ -95,6 +95,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             startActivity(new Intent(requireActivity(), TermuxActivity.class));
         }
     }
+
+    private void updateUI() {
+        // Update Termux X11 status
+        if (isX11Started) {
+            termuxX11TextView.setText(R.string.termuxx11_service_yes);
+            startX11Btn.setEnabled(false);
+            stopX11Btn.setVisibility(View.VISIBLE);
+        } else {
+            termuxX11TextView.setText(R.string.termuxx11_service_no);
+            startX11Btn.setEnabled(true);
+            stopX11Btn.setVisibility(View.GONE);
+        }
+
+        // Update XFCE4 status
+        if (isXFCE4Started) {
+            xfce4TextView.setText(R.string.xfce4_service_yes);
+        } else {
+            xfce4TextView.setText(R.string.xfce4_service_no);
+        }
+    }
+
     private boolean isTermuxX11Installed() {
         PackageManager pm = requireContext().getPackageManager();
         try {
@@ -122,15 +143,73 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         try {
             isX11Started = true;
             startX11Btn.setEnabled(false);
+            stopX11Btn.setVisibility(View.VISIBLE);
             termuxX11TextView.setText(R.string.termuxx11_service_yes);
+            // Assuming TermuxX11.main() starts the X11 service
             TermuxX11.main(new String[]{":0"});
         } catch (ErrnoException e) {
             isX11Started = false;
             startX11Btn.setEnabled(true);
+            stopX11Btn.setVisibility(View.GONE);
             termuxX11TextView.setText(R.string.termuxx11_service_no);
         }
     }
 
+    private void stopTermuxX11() {
+        isX11Started = false;
+        startX11Btn.setEnabled(true);
+        stopX11Btn.setVisibility(View.GONE);
+        termuxX11TextView.setText(R.string.termuxx11_service_no);
 
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", "com.termux.x11", null));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Update UI based on current states
+        updateUI();
+        // Register broadcast receiver
+        registerLogReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Unregister broadcast receiver
+        unregisterLogReceiver();
+    }
+
+    private void registerLogReceiver() {
+        logBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction() != null && intent.getAction().equals("ACTION_LOG_MESSAGE")) {
+                    String logMessage = intent.getStringExtra("logMessage");
+                    updateLoggerUI(logMessage);
+                }
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter("ACTION_LOG_MESSAGE");
+        requireActivity().registerReceiver(logBroadcastReceiver, intentFilter);
+    }
+
+    private void unregisterLogReceiver() {
+        if (logBroadcastReceiver != null) {
+            requireActivity().unregisterReceiver(logBroadcastReceiver);
+            logBroadcastReceiver = null;
+        }
+    }
+
+    private void updateLoggerUI(String logMessage) {
+        // Update UI on the main thread
+        new Handler(Looper.getMainLooper()).post(() -> {
+            tvLogger.append(logMessage + "\n");
+            // Scroll to the bottom of the TextView (if it's a scrolling log)
+            // tvLogger.scrollTo(0, tvLogger.getLayout().getLineTop(tvLogger.getLineCount()));
+        });
+    }
 }

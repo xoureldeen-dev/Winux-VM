@@ -1,34 +1,24 @@
 package com.vectras.boxvidra.services;
-
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.View;
 
 import androidx.core.app.NotificationCompat;
 
 import com.termux.app.TermuxService;
 import com.vectras.boxvidra.R;
-import com.vectras.boxvidra.activities.MainActivity;
-import com.vectras.boxvidra.fragments.HomeFragment;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -92,14 +82,12 @@ public class MainService extends Service {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    final String outputLine = line;
-                    MainActivity.activity.runOnUiThread(() -> HomeFragment.tvLogger.append(outputLine + "\n"));
+                    sendLogMessage(line); // Send log message to HomeFragment
                 }
 
                 // Read any errors from the error stream
                 while ((line = errorReader.readLine()) != null) {
-                    final String errorLine = line;
-                    MainActivity.activity.runOnUiThread(() -> HomeFragment.tvLogger.append(errorLine + "\n"));
+                    sendLogMessage(line); // Send log message to HomeFragment
                 }
 
                 // Clean up
@@ -107,23 +95,22 @@ public class MainService extends Service {
                 errorReader.close();
 
                 // Wait for the process to finish
-                process.waitFor();
-
-                // Wait for the process to finish
                 int exitValue = process.waitFor();
 
                 // Check if the exit value indicates an error
                 if (exitValue != 0) {
-                    // If exit value is not zero, display a toast message
-                    String exitMessage = "Command failed with exit code: " + exitValue;
-                    MainActivity.activity.runOnUiThread(() -> HomeFragment.tvLogger.append(exitMessage + "\n"));
+                    sendLogMessage("Command failed with exit code: " + exitValue); // Send log message to HomeFragment
                 }
             } catch (IOException | InterruptedException e) {
-                // Handle exceptions by printing the stack trace in the terminal output
-                final String errorMessage = e.getMessage();
-                MainActivity.activity.runOnUiThread(() -> HomeFragment.tvLogger.append(errorMessage + "\n"));
+                sendLogMessage("Error: " + e.getMessage()); // Send log message to HomeFragment
             }
         }).start();
+    }
+
+    private void sendLogMessage(String message) {
+        Intent intent = new Intent("ACTION_LOG_MESSAGE");
+        intent.putExtra("logMessage", message);
+        sendBroadcast(intent);
     }
 
     private Map<String, String> parseEnvironmentVariables(String[] envArray) {

@@ -73,4 +73,5 @@
     <string name="enter_value">Enter Value</string>
     <string name="add">Add</string>
     <string name="general">General</string>
+    <string name="stop_x11">Stop X11</string>
 </resources>
