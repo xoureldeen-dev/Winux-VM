@@ -64,7 +64,7 @@
     <string name="start_vidra">Start BOXVIDRA</string>
     <string name="termuxx11_service_yes">Termux X11 Service: yes</string>
     <string name="termuxx11_service_no">Termux X11 Service: no</string>
-    <string name="logger_text">No logs yet!\nWelcome to vidra :)</string>
+    <string name="logger_text">No logs yet!\nWelcome to vidra :)\n</string>
     <string name="open_termimal">Open Termimal</string>
     <string name="boxvidra_service_no">Boxvidra Service: no</string>
     <string name="boxvidra_service_yes">Boxvidra Service: yes</string>

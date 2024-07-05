@@ -45,7 +45,7 @@ public class MainService extends Service {
                 .setSmallIcon(R.drawable.ic_main_service_icon)
                 .build();
 
-        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu-lts --shared-tmp -- /bin/bash -c  'xfce4-session'");
+        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu-lts --shared-tmp -- /bin/bash -c  'box64 ./wine64/bin/wine64 explorer /desktop=shell,1024x786'");
 
         startForeground(NOTIFICATION_ID, notification);
     }

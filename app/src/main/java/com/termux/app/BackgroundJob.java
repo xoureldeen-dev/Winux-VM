@@ -143,7 +143,9 @@ public final class BackgroundJob {
         environment.add("TERMUX_VERSION=" + BuildConfig.VERSION_NAME);
         environment.add("TERM=xterm-256color");
         environment.add("COLORTERM=truecolor");
-        environment.add("DISPLAY=" + TermuxService.PREFIX_PATH + "/tmp/.X11-unix/X0");
+        environment.add("DISPLAY=:0");
+        environment.add("PULSE_SERVER=127.0.0.1");
+        environment.add("XDG_RUNTIME_DIR=${TMPDIR}");
         environment.add("HOME=" + TermuxService.HOME_PATH);
         environment.add("PREFIX=" + TermuxService.PREFIX_PATH);
         environment.add("LD_LIBRARY_PATH=" + TermuxService.PREFIX_PATH + "/lib");
