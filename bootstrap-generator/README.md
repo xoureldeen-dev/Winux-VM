@@ -8,4 +8,4 @@
 - `1 - install #packages required to run build.sh.`
 - `2 - build #packages to build using termux-packages repo (dont forget to change package name).`
 - `3 - extract all .deb files to home dir and copy build.sh to home dir and run it.`
-- `4 - move 'libbootstrap.so to jniLibs (only arm64 currently supported).`
+- `4 - move 'bootstrap-*-arm64.tar.gz to obb dir of the app (only arm64 currently supported).`
