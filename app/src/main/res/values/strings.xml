@@ -73,4 +73,6 @@
     <string name="add">Add</string>
     <string name="general">General</string>
     <string name="stop_x11">Stop X11</string>
+    <string name="title_logger">Logger</string>
+    <string name="title_status">Status</string>
 </resources>
