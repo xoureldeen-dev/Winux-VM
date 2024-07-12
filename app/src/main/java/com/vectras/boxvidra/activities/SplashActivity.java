@@ -28,6 +28,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
     ZoomableTextView vterm;
     Button inBtn;
     ProgressBar progressBar;
+    private final int bootstrapVersion = 2447;
+    private final String bootstrapName = "bootstrap-" + bootstrapVersion + "-arm64-v8a.tar.gz";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         inBtn = findViewById(R.id.btnInstall);
         inBtn.setOnClickListener(this);
 
-        File obbFile = new File(activity.getObbDir() + "/bootstrap-2447-arm64-v8a.tar.gz");
+        File obbFile = new File(activity.getObbDir() + "/" + bootstrapName);
 
         String filesDir = activity.getFilesDir().getAbsolutePath();
         File distroDir = new File(filesDir + "/usr");
@@ -58,7 +60,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                 new AlertDialog.Builder(activity)
                         .setTitle("Obb file not found!")
                         .setCancelable(false)
-                        .setMessage("please download and copy bootstrap-2447-arm64-v8a.tar.gz to 'Android/obb' dir")
+                        .setMessage("please download and copy " + bootstrapName + " to 'Android/obb' dir")
                         .show();
             }
         }
@@ -158,12 +160,11 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         String filesDir = activity.getFilesDir().getAbsolutePath();
 
         File distroDir = new File(filesDir + "/usr");
-        File obbFile = new File(activity.getObbDir() + "/bootstrap-2447-arm64-v8a.tar.gz");
+        File obbFile = new File(activity.getObbDir() + "/" + bootstrapName);
         executeShellCommand("set -e;" +
                 " echo 'Starting setup...';" +
                 " tar -xzf " + obbFile.getAbsolutePath() + " -C " + distroDir.getAbsolutePath() + "/../;" +
                 " echo \"installation successful! xssFjnj58Id\"");
-        FileUtils.copyFolderFromAssets(getApplicationContext(), "X11", getApplicationContext().getFilesDir() + "/X11");
     }
 
 }

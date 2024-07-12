@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -45,9 +46,16 @@ public class MainService extends Service {
                 .setSmallIcon(R.drawable.ic_main_service_icon)
                 .build();
 
-        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated ubuntu-lts --shared-tmp -- /bin/bash -c  'box64 ./wine64/bin/wine64 explorer /desktop=shell,1024x786'");
+        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/virgl_test_server_android");
+
+        startApp("awesome");
+        startApp("thunar");
 
         startForeground(NOTIFICATION_ID, notification);
+    }
+
+    private void startApp(String app) {
+        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated debian --no-sysvipc --shared-tmp -- /bin/bash -c  'export DISPLAY=:0; " + app + "'");
     }
 
     public void executeShellCommand(String userCommand) {
@@ -66,9 +74,6 @@ public class MainService extends Service {
                 processBuilder.environment().put("PATH", TermuxService.PREFIX_PATH + "/bin");
                 processBuilder.environment().put("LD_LIBRARY_PATH", TermuxService.PREFIX_PATH + "/libs");
                 processBuilder.environment().put("HOME", TermuxService.HOME_PATH);
-                processBuilder.environment().put("PULSE_SERVER", "127.0.0.1");
-                processBuilder.environment().put("XDG_RUNTIME_DIR", "${TMPDIR}");
-                processBuilder.environment().put("DISPLAY", ":0");
 
                 processBuilder.environment().putAll(parseEnvironmentVariables(envArray));
 
@@ -111,6 +116,7 @@ public class MainService extends Service {
     }
 
     private void sendLogMessage(String message) {
+        Log.i(TAG, message);
         Intent intent = new Intent("ACTION_LOG_MESSAGE");
         intent.putExtra("logMessage", message);
         sendBroadcast(intent);

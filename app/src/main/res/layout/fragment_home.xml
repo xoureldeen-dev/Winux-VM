@@ -16,13 +16,42 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/infoCardView"
                 style="@style/CardViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:id="@+id/infoTitle"
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_app_info" />
+
+                    <TextView
+                        android:id="@+id/tvAppInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/statusCardView"
+                style="@style/CardViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
 
                 <LinearLayout
@@ -87,16 +116,13 @@
                             app:cornerRadius="4dp"
                             app:strokeColor="?attr/colorPrimary" />
 
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="0dp" />
-
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/stopX11"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1.0"
+                            android:paddingStart="8dp"
                             android:text="@string/stop_x11"
                             android:visibility="gone"
                             app:cornerRadius="4dp"

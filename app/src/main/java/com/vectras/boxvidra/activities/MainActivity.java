@@ -1,16 +1,27 @@
 package com.vectras.boxvidra.activities;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.vectras.boxvidra.R;
+import com.vectras.boxvidra.core.ObbParser;
 import com.vectras.boxvidra.fragments.HomeFragment;
 import com.vectras.boxvidra.fragments.OptionsFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +33,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         activity = this;
+        ImageView iconImageView = findViewById(R.id.imageView);
+
+        try {
+            JSONObject jsonObject = ObbParser.obbParse(this);
+
+            String iconName = jsonObject.getString("iconName");
+            String filesDir = getFilesDir().getAbsolutePath();
+            String iconPath = filesDir + "/" + iconName;
+
+            File imgFile = new File(iconPath);
+            if (imgFile.exists()) {
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                iconImageView.setImageBitmap(myBitmap);
+            } else {
+                iconImageView.setImageResource(R.mipmap.ic_launcher);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
 
         // Set default fragment
         if (savedInstanceState == null) {

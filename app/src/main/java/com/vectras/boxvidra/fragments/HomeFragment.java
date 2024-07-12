@@ -23,15 +23,21 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 import com.termux.app.TermuxActivity;
 import com.vectras.boxvidra.R;
+import com.vectras.boxvidra.core.ObbParser;
 import com.vectras.boxvidra.core.TermuxX11;
 import com.vectras.boxvidra.services.MainService;
 
 import static android.os.Build.VERSION.SDK_INT;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private MaterialButton startX11Btn, startVidraBtn, openTerminalBtn, stopX11Btn;
-    private TextView termuxX11TextView, xfce4TextView, tvLogger;
+    private TextView tvAppInfo, termuxX11TextView, xfce4TextView, tvLogger;
 
     private boolean isX11Started = false;
     private boolean isXFCE4Started = false;
@@ -47,6 +53,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        tvAppInfo = view.findViewById(R.id.tvAppInfo);
 
         startX11Btn = view.findViewById(R.id.startX11);
         startX11Btn.setOnClickListener(this);
@@ -97,6 +105,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void updateUI() {
+        // Update App Info
+        try {
+            JSONObject jsonObject = ObbParser.obbParse(getActivity());
+            String info = ObbParser.parseJsonAndFormat(jsonObject);
+            tvAppInfo.setText(info);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            tvAppInfo.setText(R.string.failed_to_load_data);
+        }
+
         // Update Termux X11 status
         if (isX11Started) {
             termuxX11TextView.setText(R.string.termuxx11_service_yes);

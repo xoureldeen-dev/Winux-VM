@@ -56,7 +56,7 @@
 
     <string name="launch">Launch</string>
     <string name="startup_command">Startup Command</string>
-    <string name="distro_version">22.04 LTS</string>
+    <string name="distro_version">bookworm v4.7.0</string>
     <string name="setup_boxvidra">SETUP BOXVIDRA (DON\'T EXIT THE APP)</string>
     <string name="go_ahead">GO AHEAD</string>
     <string name="show_vterm">Show vterm</string>
@@ -75,4 +75,6 @@
     <string name="stop_x11">Stop X11</string>
     <string name="title_logger">Logger</string>
     <string name="title_status">Status</string>
+    <string name="title_app_info">App Info</string>
+    <string name="failed_to_load_data">Failed to load data.</string>
 </resources>
