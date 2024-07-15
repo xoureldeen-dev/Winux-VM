@@ -70,7 +70,7 @@ public class EnvironmentVariablesFragment extends Fragment {
         // Handle long click on list item to delete environment variable
         listViewEnv.setOnItemLongClickListener((parent, view1, position, id) -> {
             // Display confirmation dialog for deletion
-            new AlertDialog.Builder(requireContext())
+            new AlertDialog.Builder(requireContext(), R.style.MainDialogTheme)
                     .setTitle("Delete Environment Variable")
                     .setMessage("Are you sure you want to delete this environment variable?")
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {

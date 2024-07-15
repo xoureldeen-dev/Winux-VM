@@ -1,6 +1,9 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.Vectras" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/purple_200</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowMinWidthMinor">100%</item>
@@ -45,6 +48,82 @@
     <style name="CardViewStyle" parent="CardView">
         <item name="cardBackgroundColor">#25222C</item>
         <item name="cardCornerRadius">8dp</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+    <style name="MainDialogTheme" parent="AppTheme.MaterialAlertDialog"></style>
+    <!--  Alert Dialog  -->
+    <style name="AppTheme.MaterialAlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/MaterialDialog.ShapeAppearance</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MaterialDialog.Body.Text</item>
+        <item name="buttonBarPositiveButtonStyle">@style/MaterialAlertDialog.PositiveButtonStyle
+        </item>
+        <item name="buttonBarNegativeButtonStyle">@style/MaterialAlertDialog.NegativeButtonStyle
+        </item>
+        <item name="buttonBarNeutralButtonStyle">@style/MaterialAlertDialog.NeutralButtonStyle
+        </item>
+        <item name="android:windowEnterAnimation">@animator/dialog_in</item>
+        <item name="android:windowExitAnimation">@animator/dialog_out</item>
+        <!--<item name="background">?attr/colorSurface</item>-->
+        <item name="dialogCornerRadius">28dp</item>
+    </style>
+
+    <style name="MaterialDialog.ShapeAppearance" parent="">
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <style name="MaterialDialog.Title.Text" parent="@style/MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/josefin_sans</item>
+    </style>
+
+    <style name="MaterialDialog.Body.Text" parent="@style/MaterialAlertDialog.Material3.Body.Text">
+        <item name="fontFamily">@font/josefin_sans</item>
+    </style>
+
+    <style name="MaterialAlertDialog.PositiveButtonStyle" parent="@style/Widget.Material3.Button.TextButton.Dialog">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="fontFamily">@font/josefin_sans</item>
+    </style>
+
+    <style name="MaterialAlertDialog.NegativeButtonStyle" parent="@style/Widget.Material3.Button.TextButton.Dialog">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="fontFamily">@font/josefin_sans</item>
+    </style>
+
+    <style name="MaterialAlertDialog.NeutralButtonStyle" parent="@style/Widget.Material3.Button.TextButton.Dialog">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="fontFamily">@font/josefin_sans</item>
+    </style>
+
+    <style name="TransparentProgressDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="BaseImageButton">
+        <item name="android:layout_width">42dp</item>
+        <item name="android:layout_height">42dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="ListMenuButton" parent="BaseImageButton">
+        <item name="android:layout_width">34dp</item>
+        <item name="android:layout_height">34dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">2dp</item>
     </style>
 
 </resources>

@@ -1,13 +1,10 @@
 package com.vectras.boxvidra.core;
-
 import android.app.Activity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.io.IOException;
 
 public class ObbParser {
 
@@ -27,6 +24,17 @@ public class ObbParser {
 
             return String.format("Distro Name: %s\nDistro Version: %s\nDesktop Environment: %s\nWine Version: %s\nOBB Version: %s",
                     distroName, distroVersion, desktopEnvironment, wineVersion, obbVersion);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String wineVersion(Activity activity) throws IOException, JSONException {
+        String filesDir = activity.getFilesDir().getAbsolutePath();
+        String jsonString = new String(Files.readAllBytes(Paths.get(filesDir + "/DISTRO-INFO.json")));
+        JSONObject jsonObject = new JSONObject(jsonString);
+        try {
+            return jsonObject.getString("wineVersion");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

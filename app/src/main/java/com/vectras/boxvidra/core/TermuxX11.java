@@ -1,5 +1,6 @@
 package com.vectras.boxvidra.core;
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -7,6 +8,7 @@ import android.util.Log;
 
 import com.termux.app.TermuxService;
 import com.vectras.boxvidra.VectrasApp;
+import com.vectras.boxvidra.activities.MainActivity;
 
 import dalvik.system.PathClassLoader;
 

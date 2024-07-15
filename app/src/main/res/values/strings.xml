@@ -77,4 +77,10 @@
     <string name="title_status">Status</string>
     <string name="title_app_info">App Info</string>
     <string name="failed_to_load_data">Failed to load data.</string>
+    <string name="wine_prefixes">Wine Prefixes</string>
+    <string name="home">Home</string>
+    <string name="options">Options</string>
+    <string name="add_new_prefixes">Add new prefixes</string>
+    <string name="prefix_name">Prefix Name</string>
+    <string name="machine_thumbnail">Machine Thumbnail</string>
 </resources>

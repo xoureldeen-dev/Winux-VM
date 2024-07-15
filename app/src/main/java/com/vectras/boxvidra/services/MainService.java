@@ -1,147 +1,114 @@
 package com.vectras.boxvidra.services;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Context;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
+import android.system.ErrnoException;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
 import com.termux.app.TermuxService;
 import com.vectras.boxvidra.R;
+import com.vectras.boxvidra.activities.MainActivity;
+import com.vectras.boxvidra.core.SoundThread;
+import com.vectras.boxvidra.core.TermuxX11;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
+import android.app.PendingIntent;
 
 public class MainService extends Service {
-    public static String CHANNEL_ID = "Boxvidra Service";
-    private static final int NOTIFICATION_ID = 1;
-    private String TAG = "MainService";
-    public static MainService service;
+    private static final String TAG = "MainService";
+    private static final String CHANNEL_ID = "MainServiceChannel";
+    private static final int NOTIFICATION_ID = 12345;
 
-    private static final String PREFS_NAME = "MyPrefs";
-    private static final String ENVIRONMENT_VARS_KEY = "environmentVars";
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        service = this;
-        createNotificationChannel();
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Boxvidra")
-                .setContentText("Boxvidra running in background.")
-                .setSmallIcon(R.drawable.ic_main_service_icon)
-                .build();
-
-        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/virgl_test_server_android");
-
-        startApp("awesome");
-        startApp("thunar");
-
-        startForeground(NOTIFICATION_ID, notification);
-    }
-
-    private void startApp(String app) {
-        executeShellCommand(TermuxService.PREFIX_PATH + "/bin/proot-distro login --isolated debian --no-sysvipc --shared-tmp -- /bin/bash -c  'export DISPLAY=:0; " + app + "'");
-    }
-
-    public void executeShellCommand(String userCommand) {
-        new Thread(() -> {
-            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-            Set<String> savedVars = sharedPreferences.getStringSet(ENVIRONMENT_VARS_KEY, new HashSet<>());
-
-            // Convert the set to an array of strings for ProcessBuilder
-            String[] envArray = savedVars.toArray(new String[0]);
-
-            try {
-                ProcessBuilder processBuilder = new ProcessBuilder();
-
-                processBuilder.environment().put("TMPDIR", TermuxService.PREFIX_PATH + "/tmp");
-                processBuilder.environment().put("PATH", TermuxService.PREFIX_PATH + "/bin");
-                processBuilder.environment().put("LD_LIBRARY_PATH", TermuxService.PREFIX_PATH + "/libs");
-                processBuilder.environment().put("HOME", TermuxService.HOME_PATH);
-
-                processBuilder.environment().putAll(parseEnvironmentVariables(envArray));
-
-                processBuilder.command("/system/bin/sh");
-                Process process = processBuilder.start();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-                writer.write(userCommand);
-                writer.newLine();
-                writer.flush();
-                writer.close();
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sendLogMessage(line); // Send log message to HomeFragment
-                }
-
-                // Read any errors from the error stream
-                while ((line = errorReader.readLine()) != null) {
-                    sendLogMessage(line); // Send log message to HomeFragment
-                }
-
-                // Clean up
-                reader.close();
-                errorReader.close();
-
-                // Wait for the process to finish
-                int exitValue = process.waitFor();
-
-                // Check if the exit value indicates an error
-                if (exitValue != 0) {
-                    sendLogMessage("Command failed with exit code: " + exitValue); // Send log message to HomeFragment
-                }
-            } catch (IOException | InterruptedException e) {
-                sendLogMessage("Error: " + e.getMessage()); // Send log message to HomeFragment
-            }
-        }).start();
-    }
-
-    private void sendLogMessage(String message) {
-        Log.i(TAG, message);
-        Intent intent = new Intent("ACTION_LOG_MESSAGE");
-        intent.putExtra("logMessage", message);
-        sendBroadcast(intent);
-    }
-
-    private Map<String, String> parseEnvironmentVariables(String[] envArray) {
-        // Convert array of environment variables to a map for ProcessBuilder
-        Map<String, String> envMap = new HashMap<>();
-        for (String envVar : envArray) {
-            String[] parts = envVar.split("=");
-            if (parts.length == 2) {
-                envMap.put(parts[0], parts[1]);
-            }
-        }
-        return envMap;
-    }
+    private SoundThread soundThread;
+    private Thread thread;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && "STOP".equals(intent.getAction())) {
-            stopForeground(true);
-            stopSelf();
-            return START_NOT_STICKY;
+        createNotificationChannel();
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Boxvidra")
+                .setContentText("Boxvidra running in background")
+                .setSmallIcon(R.drawable.ic_main_service_icon)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        startForeground(NOTIFICATION_ID, notification);
+
+        String prootCommand = "su - xuser";
+        String prootPath = TermuxService.PREFIX_PATH + "/bin/proot";
+        executeProotCommand(prootPath, prootCommand);
+        Intent x11Intent = new Intent();
+        x11Intent.setClassName("com.termux.x11", "com.termux.x11.MainActivity");
+        x11Intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            startActivity(x11Intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e("LaunchActivity", "Activity not found: " + e.getMessage());
         }
+
+        //startAudio(ip, port);
+
         return START_NOT_STICKY;
+    }
+
+    private String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress.getHostAddress().toString().contains(".")) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    private void startAudio(String ip, String port) {
+        if (soundThread == null) {
+            soundThread = new SoundThread(ip, port, error -> {
+                // Handle errors here
+                Log.e(TAG, "Error: " + error);
+            });
+            thread = new Thread(soundThread);
+            thread.start();
+            Log.d(TAG, "Audio started");
+        }
+    }
+
+    private void stopAudio() {
+        if (soundThread != null) {
+            soundThread.Terminate();
+            soundThread = null;
+            thread = null;
+            Log.d(TAG, "Audio stopped");
+        }
     }
 
     @Override
@@ -149,15 +116,93 @@ public class MainService extends Service {
         return null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Service destroyed");
+    }
+
+    private void executeProotCommand(String prootPath, String command) {
+        new Thread(() -> {
+            try {
+                ProcessBuilder processBuilder = new ProcessBuilder();
+
+                String[] prootCommand = {
+                        prootPath,
+                        "--link2symlink",
+                        "-0",
+                        "-r", TermuxService.HOME_PATH + "/debian-fs",
+                        "--bind=/dev",
+                        "--bind=/proc",
+                        "--bind=" + TermuxService.HOME_PATH + "/debian-fs/root:/dev/shm",
+                        "--bind=/sdcard",
+                        "--bind=/data",
+                        "--bind=/data/data/com.vectras.boxvidra/files/usr/tmp:/tmp",
+                        "-w", "/root",
+                        "/usr/bin/env", "-i",
+                        "HOME=/root",
+                        "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games",
+                        "LANG=C.UTF-8",
+                        "DISPLAY=:0",
+                        "LANG=en_US.UTF-8",
+                        "MOZ_FAKE_NO_SANDBOX=1",
+                        "PULSE_SERVER=127.0.0.1",
+                        "TERM=" + System.getenv("TERM"),
+                        "TMPDIR=/tmp",
+                        "WINEPREFIX=" + TermuxService.OPT_PATH + "/wine-prefixes/",
+                        "/bin/bash",
+                        "-c",
+                        command
+                };
+
+                processBuilder.command(prootCommand);
+
+                Process process = processBuilder.start();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+                // Send command to proot
+                writer.write(command);
+                writer.newLine();
+                writer.flush();
+                writer.close();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Log.d(TAG, line); // Log output from proot
+                }
+
+                // Read any errors from the error stream
+                while ((line = errorReader.readLine()) != null) {
+                    Log.e(TAG, line); // Log errors from proot
+                }
+
+                // Wait for the process to finish
+                int exitValue = process.waitFor();
+                Log.d(TAG, "Command execution finished with exit code: " + exitValue);
+
+                // Clean up
+                reader.close();
+                errorReader.close();
+
+            } catch (IOException | InterruptedException e) {
+                Log.e(TAG, "Error executing proot command: " + e.getMessage());
+            }
+        }).start();
+    }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID, CHANNEL_ID,
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "MainService Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
-
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
         }
     }
 }

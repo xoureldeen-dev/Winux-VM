@@ -51,6 +51,8 @@ public final class TermuxService extends Service implements SessionChangedCallba
     public static final String FILES_PATH = "/data/data/com.vectras.boxvidra/files";
     public static final String PREFIX_PATH = FILES_PATH + "/usr";
     public static final String HOME_PATH = FILES_PATH + "/home";
+    public static final String OPT_PATH = FILES_PATH + "/home/debian-fs/opt";
+    public static final String WINE_PATH = OPT_PATH + "/wine";
 
     private static final int NOTIFICATION_ID = 1337;
 

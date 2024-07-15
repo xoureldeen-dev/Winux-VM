@@ -1,5 +1,7 @@
 package com.vectras.boxvidra.activities;
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.vectras.boxvidra.R;
 import com.vectras.boxvidra.core.ObbParser;
 import com.vectras.boxvidra.fragments.HomeFragment;
 import com.vectras.boxvidra.fragments.OptionsFragment;
+import com.vectras.boxvidra.fragments.WinePrefixFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         activity = this;
+
+        clearNotifications();
+
         ImageView iconImageView = findViewById(R.id.imageView);
 
         try {
@@ -67,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (item.getItemId() == R.id.menu_home) {
                 selectedFragment = new HomeFragment();
+            } else if (item.getItemId() == R.id.menu_wine_prefixes) {
+                selectedFragment = new WinePrefixFragment();
             } else if (item.getItemId() == R.id.menu_options) {
                 selectedFragment = new OptionsFragment();
             }
@@ -85,4 +93,10 @@ public class MainActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
     }
+
+    public static void clearNotifications() {
+        NotificationManager notificationManager = (NotificationManager) activity.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
 }
