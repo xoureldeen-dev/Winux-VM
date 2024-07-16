@@ -83,4 +83,8 @@
     <string name="add_new_prefixes">Add new prefixes</string>
     <string name="prefix_name">Prefix Name</string>
     <string name="machine_thumbnail">Machine Thumbnail</string>
+    <string name="wine64">Wine64</string>
+    <string name="start_xfce4">Start XFCE4</string>
+    <string name="tools">Tools</string>
+    <string name="terminal">Terminal</string>
 </resources>

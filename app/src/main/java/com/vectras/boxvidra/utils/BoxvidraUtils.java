@@ -6,8 +6,12 @@ import android.content.SharedPreferences;
 import com.termux.app.TermuxService;
 import com.vectras.boxvidra.fragments.EnvironmentVariablesFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,12 +22,10 @@ public class BoxvidraUtils {
         if (prefixName == null)
             return null;
 
-        // Retrieve saved environment variables from SharedPreferences
         SharedPreferences sharedPreferences = context.getSharedPreferences(EnvironmentVariablesFragment.PREFS_NAME, Context.MODE_PRIVATE);
         Set<String> savedVars = sharedPreferences.getStringSet(EnvironmentVariablesFragment.ENVIRONMENT_VARS_KEY, new HashSet<>());
         ArrayList<String> environmentVariables = new ArrayList<>(savedVars);
 
-        // Build the command with environment variables
         ArrayList<String> command = new ArrayList<>();
 
         for (String var : environmentVariables) {
@@ -36,10 +38,23 @@ public class BoxvidraUtils {
         command.add("export WINEPREFIX='" + TermuxService.OPT_PATH + "/wine-prefixes/" + prefixName + "'");
         command.add(";");
 
-        command.add("xfce4-session");
+        // Retrieve command options from JSON
+        File prefixDir = new File(TermuxService.OPT_PATH + "/wine-prefixes/" + prefixName);
+        File optionsFile = new File(prefixDir, "options.json");
+        try {
+            if (optionsFile.exists()) {
+                JSONObject options = JsonUtils.loadOptionsFromJson(optionsFile);
+                if (options.getBoolean("wine64")) {
+                    command.add("wine64");
+                }
+                if (options.getBoolean("startxfce4")) {
+                    command.add("startxfce4");
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
 
         return String.join(" ", command);
     }
 }
-
-

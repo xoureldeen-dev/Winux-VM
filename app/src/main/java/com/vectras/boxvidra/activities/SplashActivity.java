@@ -205,7 +205,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void showLowSpaceDialog() {
-        new AlertDialog.Builder(activity)
+        new AlertDialog.Builder(activity, R.style.MainDialogTheme)
                 .setTitle("Low Space Warning")
                 .setMessage("You do not have enough free space to continue.")
                 .setPositiveButton("Exit", (dialog, which) -> finish())

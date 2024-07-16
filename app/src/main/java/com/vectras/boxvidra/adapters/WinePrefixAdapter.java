@@ -1,11 +1,11 @@
 package com.vectras.boxvidra.adapters;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.system.ErrnoException;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -14,6 +14,7 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,14 +22,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.vectras.boxvidra.R;
 import com.vectras.boxvidra.activities.MainActivity;
 import com.vectras.boxvidra.core.TermuxX11;
-import com.vectras.boxvidra.fragments.HomeFragment;
 import com.vectras.boxvidra.services.MainService;
 import com.vectras.boxvidra.utils.BoxvidraUtils;
+import com.vectras.boxvidra.utils.JsonUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class WinePrefixAdapter extends RecyclerView.Adapter<WinePrefixAdapter.ViewHolder> {
@@ -48,10 +54,76 @@ public class WinePrefixAdapter extends RecyclerView.Adapter<WinePrefixAdapter.Vi
         return new ViewHolder(view);
     }
 
+    private boolean isMainServiceRunning() {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (MainService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void showOptionsDialog(ViewHolder holder, File winePrefix) {
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_prefix_options, null);
+
+        SwitchMaterial switchWine64 = dialogView.findViewById(R.id.switchWine64);
+        SwitchMaterial switchStartXFCE4 = dialogView.findViewById(R.id.switchStartXFCE4);
+
+        // Load saved options if available
+        File optionsFile = new File(winePrefix, "options.json");
+        if (optionsFile.exists()) {
+            try {
+                JSONObject options = JsonUtils.loadOptionsFromJson(optionsFile);
+                switchWine64.setChecked(options.getBoolean("wine64"));
+                switchStartXFCE4.setChecked(options.getBoolean("startxfce4"));
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.MainDialogTheme)
+                .setTitle("Choose Command")
+                .setView(dialogView)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    if (!switchWine64.isChecked() && !switchStartXFCE4.isChecked()) {
+                        Toast.makeText(context, "At least one option must be enabled!", Toast.LENGTH_SHORT).show();
+                        showOptionsDialog(holder, winePrefix);
+                    } else {
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("wine64", switchWine64.isChecked());
+                            jsonObject.put("startxfce4", switchStartXFCE4.isChecked());
+
+                            JsonUtils.saveOptionsToJson(optionsFile, jsonObject);
+                        } catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "Failed to save options!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         File winePrefix = winePrefixes.get(position);
         holder.textView.setText(winePrefix.getName());
+
+        boolean isServiceRunning = isMainServiceRunning();
+        holder.itemView.setEnabled(!isServiceRunning);
+        holder.menuButton.setEnabled(!isServiceRunning);
+
+        if (isServiceRunning) {
+            holder.itemView.setOnClickListener(null);
+            holder.itemView.setOnLongClickListener(null);
+        } else {
+            holder.itemView.setOnClickListener(holder);
+            holder.itemView.setOnLongClickListener(holder);
+        }
     }
 
     @Override
@@ -61,10 +133,19 @@ public class WinePrefixAdapter extends RecyclerView.Adapter<WinePrefixAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView textView;
+        ImageButton menuButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.TVTitle);
+            menuButton = itemView.findViewById(R.id.BTMenu);
+
+            menuButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                File winePrefix = winePrefixes.get(position);
+                showOptionsDialog(this, winePrefix);
+            });
+
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }

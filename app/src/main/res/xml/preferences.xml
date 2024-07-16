@@ -14,4 +14,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/tools"
+        app:icon="@drawable/round_build_24"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="key_terminal"
+            android:title="@string/terminal"
+            android:layout="@layout/material_preference" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

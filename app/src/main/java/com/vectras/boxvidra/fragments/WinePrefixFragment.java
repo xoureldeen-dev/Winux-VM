@@ -28,9 +28,14 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.termux.app.TermuxService;
 import com.vectras.boxvidra.R;
 import com.vectras.boxvidra.adapters.WinePrefixAdapter;
+import com.vectras.boxvidra.utils.JsonUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,6 +169,18 @@ public class WinePrefixFragment extends Fragment {
                     new File(prefixDir, "dosdevices").mkdirs();
                     new File(prefixDir, "dosdevices/c:").mkdirs();
                     new File(prefixDir, "dosdevices/d:").mkdirs();
+
+                    // Create options.json with both options enabled
+                    File optionsFile = new File(prefixDir, "options.json");
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("wine64", false);
+                        jsonObject.put("startxfce4", true);
+                        JsonUtils.saveOptionsToJson(optionsFile, jsonObject);
+                    } catch (JSONException | IOException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
                     return true;
                 } else {
                     return false;
@@ -182,4 +199,12 @@ public class WinePrefixFragment extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadWinePrefixes();
+        adapter.notifyDataSetChanged();
+    }
+
 }

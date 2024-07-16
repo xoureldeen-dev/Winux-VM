@@ -3,21 +3,19 @@ package com.vectras.boxvidra.services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.system.ErrnoException;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
 import com.termux.app.TermuxService;
 import com.vectras.boxvidra.R;
-import com.vectras.boxvidra.activities.MainActivity;
 import com.vectras.boxvidra.core.SoundThread;
-import com.vectras.boxvidra.core.TermuxX11;
 import com.vectras.boxvidra.utils.BoxvidraUtils;
 
 import java.io.BufferedReader;
@@ -30,8 +28,6 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import android.app.PendingIntent;
-
 public class MainService extends Service {
     private static final String TAG = "MainService";
     private static final String CHANNEL_ID = "MainServiceChannel";
@@ -40,27 +36,33 @@ public class MainService extends Service {
     private SoundThread soundThread;
     private Thread thread;
 
+    private Process prootProcess;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Intent killAllIntent = new Intent(this, MainService.class);
+        killAllIntent.setAction("KILL_ALL");
+        PendingIntent killAllPendingIntent = PendingIntent.getService(this, 0, killAllIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Boxvidra")
-                .setContentText("Boxvidra running in background")
+                .setContentText("Pull down to show options")
                 .setSmallIcon(R.drawable.ic_main_service_icon)
-                .setContentIntent(pendingIntent)
-                .build();
+                .addAction(R.drawable.round_logout_24, "Stop All Processes", killAllPendingIntent);
+
+        Notification notification = notificationBuilder.build();
 
         startForeground(NOTIFICATION_ID, notification);
 
         String commandLine = BoxvidraUtils.BoxvidraCmdLine(getApplicationContext());
-        if (commandLine != null)
+        if (commandLine != null) {
+            executeProotCommand("virgl_test_server_android");
             executeProotCommand(commandLine);
-        else
+        } else {
             stopSelf();
+        }
 
         Intent x11Intent = new Intent();
         x11Intent.setClassName("com.termux.x11", "com.termux.x11.MainActivity");
@@ -72,32 +74,28 @@ public class MainService extends Service {
             Log.e("LaunchActivity", "Activity not found: " + e.getMessage());
         }
 
-        //startAudio(ip, port);
+        if (intent != null && "KILL_ALL".equals(intent.getAction())) {
+            stopAllProcesses();
+        }
 
         return START_NOT_STICKY;
     }
 
-    private String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && inetAddress.getHostAddress().toString().contains(".")) {
-                        return inetAddress.getHostAddress().toString();
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
+    private void createNotificationChannel() {
+        NotificationChannel channel = new NotificationChannel(
+                CHANNEL_ID,
+                "MainService Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.createNotificationChannel(channel);
         }
-        return null;
     }
 
     private void startAudio(String ip, String port) {
         if (soundThread == null) {
             soundThread = new SoundThread(ip, port, error -> {
-                // Handle errors here
                 Log.e(TAG, "Error: " + error);
             });
             thread = new Thread(soundThread);
@@ -158,35 +156,30 @@ public class MainService extends Service {
 
                 processBuilder.command(prootCommand);
 
-                Log.d(TAG, "Proot command: " + String.join(" ", prootCommand)); // Log proot command
+                prootProcess = processBuilder.start();
+                Log.d(TAG, "Proot process started");
 
-                Process process = processBuilder.start();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(prootProcess.getOutputStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(prootProcess.getInputStream()));
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(prootProcess.getErrorStream()));
 
                 writer.write(command);
                 writer.newLine();
                 writer.flush();
-                writer.close();
-
-                Log.d(TAG, "Proot write in command: " + command); // Log proot write in command
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    Log.d(TAG, line); // Log output from proot
+                    Log.d(TAG, line);
                 }
 
-                // Read any errors from the error stream
                 while ((line = errorReader.readLine()) != null) {
-                    Log.e(TAG, line); // Log errors from proot
+                    Log.e(TAG, line);
                 }
 
-                // Wait for the process to finish
-                int exitValue = process.waitFor();
+                int exitValue = prootProcess.waitFor();
                 Log.d(TAG, "Command execution finished with exit code: " + exitValue);
 
-                // Clean up
+                writer.close();
                 reader.close();
                 errorReader.close();
 
@@ -196,17 +189,27 @@ public class MainService extends Service {
         }).start();
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "MainService Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
+    private void stopAllProcesses() {
+        stopAudio();
+        stopSelf();
+        System.exit(0);
+    }
+
+    private String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress.getHostAddress().toString().contains(".")) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
             }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
         }
+        return null;
     }
 }
+
