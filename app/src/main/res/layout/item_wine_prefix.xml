@@ -52,6 +52,7 @@
                     android:gravity="left"
                     android:padding="10dp"
                     android:src="@drawable/round_settings_24"
+                    android:visibility="gone"
                     app:tint="?attr/colorPrimary" />
             </FrameLayout>
 
