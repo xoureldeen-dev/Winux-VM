@@ -45,7 +45,7 @@ public class BoxvidraUtils {
             if (optionsFile.exists()) {
                 JSONObject options = JsonUtils.loadOptionsFromJson(optionsFile);
                 if (options.getBoolean("wine64")) {
-                    command.add("wine64");
+                    command.add("wine64 explorer /desktop=shell,1024x786");
                 }
                 if (options.getBoolean("startxfce4")) {
                     command.add("startxfce4");
