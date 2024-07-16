@@ -314,7 +314,7 @@ public class SplashActivity extends AppCompatActivity {
                 " tar -xzf " + obbFile.getAbsolutePath() + " -C " + distroDir.getAbsolutePath() + ";" +
                 " echo 'Extract Successful!';" +
                 // Do not delete the OBB file when picked manually
-                (obbPickedManually ? "" : " echo 'Removing " + obbFile.getAbsolutePath() + "...'; rm " + obbFile.getAbsolutePath() + ";") +
+                // (obbPickedManually ? "" : " echo 'Removing " + obbFile.getAbsolutePath() + "...'; rm " + obbFile.getAbsolutePath() + ";") +
                 " echo \"installation successful! xssFjnj58Id\"");
     }
 
