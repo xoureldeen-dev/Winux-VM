@@ -18,6 +18,7 @@ import com.vectras.boxvidra.R;
 import com.vectras.boxvidra.activities.MainActivity;
 import com.vectras.boxvidra.core.SoundThread;
 import com.vectras.boxvidra.core.TermuxX11;
+import com.vectras.boxvidra.utils.BoxvidraUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -55,9 +56,12 @@ public class MainService extends Service {
 
         startForeground(NOTIFICATION_ID, notification);
 
-        String prootCommand = "su - xuser";
-        String prootPath = TermuxService.PREFIX_PATH + "/bin/proot";
-        executeProotCommand(prootPath, prootCommand);
+        String commandLine = BoxvidraUtils.BoxvidraCmdLine(getApplicationContext());
+        if (commandLine != null)
+            executeProotCommand(commandLine);
+        else
+            stopSelf();
+
         Intent x11Intent = new Intent();
         x11Intent.setClassName("com.termux.x11", "com.termux.x11.MainActivity");
         x11Intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -122,13 +126,13 @@ public class MainService extends Service {
         Log.d(TAG, "Service destroyed");
     }
 
-    private void executeProotCommand(String prootPath, String command) {
+    private void executeProotCommand(String command) {
         new Thread(() -> {
             try {
                 ProcessBuilder processBuilder = new ProcessBuilder();
 
                 String[] prootCommand = {
-                        prootPath,
+                        TermuxService.PREFIX_PATH + "/bin/proot",
                         "--link2symlink",
                         "-0",
                         "-r", TermuxService.HOME_PATH + "/debian-fs",
@@ -143,30 +147,30 @@ public class MainService extends Service {
                         "HOME=/root",
                         "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games",
                         "LANG=C.UTF-8",
-                        "DISPLAY=:0",
                         "LANG=en_US.UTF-8",
+                        "DISPLAY=:0",
                         "MOZ_FAKE_NO_SANDBOX=1",
-                        "PULSE_SERVER=127.0.0.1",
                         "TERM=" + System.getenv("TERM"),
                         "TMPDIR=/tmp",
-                        "WINEPREFIX=" + TermuxService.OPT_PATH + "/wine-prefixes/",
                         "/bin/bash",
-                        "-c",
-                        command
+                        "--login"
                 };
 
                 processBuilder.command(prootCommand);
+
+                Log.d(TAG, "Proot command: " + String.join(" ", prootCommand)); // Log proot command
 
                 Process process = processBuilder.start();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-                // Send command to proot
                 writer.write(command);
                 writer.newLine();
                 writer.flush();
                 writer.close();
+
+                Log.d(TAG, "Proot write in command: " + command); // Log proot write in command
 
                 String line;
                 while ((line = reader.readLine()) != null) {

@@ -24,8 +24,8 @@ import java.util.Set;
 
 public class EnvironmentVariablesFragment extends Fragment {
 
-    private static final String PREFS_NAME = "MyPrefs";
-    private static final String ENVIRONMENT_VARS_KEY = "environmentVars";
+    public static final String PREFS_NAME = "MyPrefs";
+    public static final String ENVIRONMENT_VARS_KEY = "environmentVars";
 
     private ArrayList<String> environmentVariables;
     private ArrayAdapter<String> adapter;

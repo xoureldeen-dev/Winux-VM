@@ -4,6 +4,7 @@
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_margin="18dp">
 
     <ProgressBar
@@ -62,25 +63,6 @@
                             android:textSize="12sp" />
                     </LinearLayout>
                 </ScrollView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
-
-                <Button
-                    android:id="@+id/btnInstall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/go_ahead" />
-
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -1,13 +1,16 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/general">
+        android:title="@string/general"
+        app:icon="@drawable/round_settings_24"
+        app:iconSpaceReserved="false">
 
         <Preference
-            android:key="key_environment"
-            android:title="Manage Environments"
             android:fragment="com.vectras.boxvidra.fragments.EnvironmentVariablesFragment"
-            android:layout="@layout/material_preference"/>
+            android:key="key_environment"
+            android:layout="@layout/material_preference"
+            android:title="Manage Environments" />
 
     </PreferenceCategory>
 

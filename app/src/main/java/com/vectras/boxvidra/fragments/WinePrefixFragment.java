@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,24 +23,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.termux.app.TermuxService;
 import com.vectras.boxvidra.R;
 import com.vectras.boxvidra.adapters.WinePrefixAdapter;
-import com.vectras.boxvidra.core.ObbParser;
-
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.json.JSONException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +39,7 @@ public class WinePrefixFragment extends Fragment {
     private RecyclerView recyclerView;
     private WinePrefixAdapter adapter;
     private List<File> winePrefixes;
+    private String TAG = "WinePrefix";
 
     @Nullable
     @Override
@@ -101,13 +93,7 @@ public class WinePrefixFragment extends Fragment {
 
                     // Check if the name already exists
                     if (!isPrefixNameExists(prefixName)) {
-                        String tarGzPath;
-                        try {
-                            tarGzPath = TermuxService.OPT_PATH + "/wine/" + ObbParser.wineVersion(getActivity()) + "/container-amd64.tar.gz";
-                        } catch (IOException | JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                        new ExtractPrefixTask().execute(prefixName, tarGzPath);
+                        new CreatePrefixTask().execute(prefixName);
                     } else {
                         Toast.makeText(getContext(), "Prefix name already exists!", Toast.LENGTH_SHORT).show();
                     }
@@ -121,7 +107,7 @@ public class WinePrefixFragment extends Fragment {
         String prefixName;
         File root = new File(TermuxService.OPT_PATH + "/wine-prefixes");
         do {
-            prefixName = "Container - " + index++;
+            prefixName = "Prefix - " + index++;
         } while (new File(root, prefixName).exists());
         return prefixName;
     }
@@ -132,7 +118,7 @@ public class WinePrefixFragment extends Fragment {
         return prefixDir.exists();
     }
 
-    private class ExtractPrefixTask extends AsyncTask<String, Integer, Boolean> {
+    private class CreatePrefixTask extends AsyncTask<String, Integer, Boolean> {
         private Dialog progressDialog;
         private CircularProgressIndicator progressIndicator;
         private TextView progressMessage;
@@ -147,8 +133,8 @@ public class WinePrefixFragment extends Fragment {
             progressIndicator = progressDialog.findViewById(R.id.progress_circular);
             progressMessage = progressDialog.findViewById(R.id.progress_message);
 
-            int colorPrimary = ContextCompat.getColor(getContext(), R.color.purple_500);
-            int colorAccent = ContextCompat.getColor(getContext(), R.color.purple_200);
+            int colorPrimary = ContextCompat.getColor(getContext(), R.color.soft_purple_mid);
+            int colorAccent = ContextCompat.getColor(getContext(), R.color.soft_purple_light);
             progressIndicator.setIndicatorColor(colorPrimary);
             progressIndicator.setTrackColor(colorAccent);
 
@@ -169,24 +155,21 @@ public class WinePrefixFragment extends Fragment {
         @Override
         protected Boolean doInBackground(String... params) {
             String prefixName = params[0];
-            String tarGzPath = params[1];
             File prefixDir = new File(TermuxService.OPT_PATH + "/wine-prefixes", prefixName);
             if (!prefixDir.exists()) {
-                prefixDir.mkdirs();
+                if (prefixDir.mkdirs()) {
+                    // Create standard directory structure for Wine prefix
+                    new File(prefixDir, "drive_c").mkdirs();
+                    new File(prefixDir, "drive_d").mkdirs();
+                    new File(prefixDir, "dosdevices").mkdirs();
+                    new File(prefixDir, "dosdevices/c:").mkdirs();
+                    new File(prefixDir, "dosdevices/d:").mkdirs();
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            try {
-                extractTarGzFile(new FileInputStream(tarGzPath), prefixDir, tarGzPath);
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            progressIndicator.setIndeterminate(false);
-            progressIndicator.setProgress(values[0]);
+            return false; // Prefix already exists
         }
 
         @Override
@@ -195,42 +178,7 @@ public class WinePrefixFragment extends Fragment {
             if (success) {
                 loadWinePrefixes();
             } else {
-                // Handle failure
-            }
-        }
-
-        private void extractTarGzFile(InputStream is, File targetDir, String tarGzPath) throws IOException {
-            try (GzipCompressorInputStream gis = new GzipCompressorInputStream(is);
-                 TarArchiveInputStream tis = new TarArchiveInputStream(gis)) {
-                TarArchiveEntry entry;
-                long totalSize = 0;
-                long extractedSize = 0;
-                while ((entry = tis.getNextTarEntry()) != null) {
-                    totalSize += entry.getSize();
-                }
-                is.close();
-
-                is = new FileInputStream(tarGzPath); // Reopen the input stream
-                try (GzipCompressorInputStream gis2 = new GzipCompressorInputStream(is);
-                     TarArchiveInputStream tis2 = new TarArchiveInputStream(gis2)) {
-                    while ((entry = tis2.getNextTarEntry()) != null) {
-                        File destPath = new File(targetDir, entry.getName());
-                        if (entry.isDirectory()) {
-                            destPath.mkdirs();
-                        } else {
-                            destPath.getParentFile().mkdirs();
-                            try (FileOutputStream fos = new FileOutputStream(destPath)) {
-                                byte[] buffer = new byte[1024];
-                                int len;
-                                while ((len = tis2.read(buffer)) != -1) {
-                                    fos.write(buffer, 0, len);
-                                    extractedSize += len;
-                                    publishProgress((int) ((extractedSize * 100) / totalSize));
-                                }
-                            }
-                        }
-                    }
-                }
+                Toast.makeText(getContext(), "Failed to create Wine prefix!", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -12,7 +12,8 @@
         android:layout_height="100dp"
         android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/infoCardView">
 
         <ImageView
             android:id="@+id/imageView"
@@ -20,8 +21,69 @@
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
             android:scaleType="centerInside"
-            android:src="@drawable/debian_logo" />
+            android:src="@drawable/debian_logo"
+            android:layout_marginTop="8dp"/>
     </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/infoCardView"
+            style="@style/CardViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/topContent"
+            app:layout_constraintBottom_toTopOf="@+id/fragmentContainer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/infoTitle"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_app_info" />
+
+                <TextView
+                    android:id="@+id/tvAppInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/discordButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_discord" />
+
+                    <ImageButton
+                        android:id="@+id/telegramButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_telegram" />
+
+                    <ImageButton
+                        android:id="@+id/websiteButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/round_language_24" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
@@ -29,13 +91,13 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
-        app:layout_constraintTop_toBottomOf="@+id/topContent" />
+        app:layout_constraintTop_toBottomOf="@+id/infoCardView" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/darkPurple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

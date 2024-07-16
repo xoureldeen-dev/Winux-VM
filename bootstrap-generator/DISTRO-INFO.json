@@ -1,8 +1,0 @@
-{
-  "iconName": "debian_logo.png",
-  "distroName": "Debian",
-  "distroVersion": "bookworm v4.7.0",
-  "desktopEnvironment": "AwesomeVidra v1.6",
-  "wineVersion": "vanilla 9.7",
-  "obbVersion": "2.0"
-}

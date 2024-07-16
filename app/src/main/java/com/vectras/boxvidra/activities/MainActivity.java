@@ -1,22 +1,24 @@
 package com.vectras.boxvidra.activities;
+
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.vectras.boxvidra.R;
 import com.vectras.boxvidra.core.ObbParser;
-import com.vectras.boxvidra.fragments.HomeFragment;
 import com.vectras.boxvidra.fragments.OptionsFragment;
 import com.vectras.boxvidra.fragments.WinePrefixFragment;
 
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         // Set default fragment
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainer, new HomeFragment())
+                    .replace(R.id.fragmentContainer, new WinePrefixFragment())
                     .commit();
         }
 
@@ -71,9 +73,9 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Fragment selectedFragment = null;
 
-            if (item.getItemId() == R.id.menu_home) {
+            /*if (item.getItemId() == R.id.menu_home) {
                 selectedFragment = new HomeFragment();
-            } else if (item.getItemId() == R.id.menu_wine_prefixes) {
+            } else*/ if (item.getItemId() == R.id.menu_wine_prefixes) {
                 selectedFragment = new WinePrefixFragment();
             } else if (item.getItemId() == R.id.menu_options) {
                 selectedFragment = new OptionsFragment();
@@ -88,10 +90,38 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.darkPurple));
+
+        TextView tvAppInfo = findViewById(R.id.tvAppInfo);
+
+        // Update App Info
+        try {
+            JSONObject jsonObject = ObbParser.obbParse(activity);
+            String info = ObbParser.parseJsonAndFormat(jsonObject);
+            tvAppInfo.setText(info);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            tvAppInfo.setText(R.string.failed_to_load_data);
+        }
+
+        ImageButton discordButton = findViewById(R.id.discordButton);
+        ImageButton telegramButton = findViewById(R.id.telegramButton);
+        ImageButton websiteButton = findViewById(R.id.websiteButton);
+
+        discordButton.setOnClickListener(v -> {
+            openUrlInBrowser("https://discord.gg/4GNkya3D");
+        });
+
+        telegramButton.setOnClickListener(v -> {
+            openUrlInBrowser("https://t.me/vectras_os");
+        });
+
+        websiteButton.setOnClickListener(v -> openUrlInBrowser("https://boxvidra.blackstorm.cc/"));
+    }
+
+    private void openUrlInBrowser(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 
     public static void clearNotifications() {
