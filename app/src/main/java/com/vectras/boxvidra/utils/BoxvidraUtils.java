@@ -32,14 +32,14 @@ public class BoxvidraUtils {
             command.add("export " + var);
         }
 
-        command.add("export WINEDEBUG=+all");
+        File prefixDir = new File(TermuxService.OPT_PATH + "/wine-prefixes/" + prefixName);
+
         command.add("export DISPLAY=:0");
         command.add("export PULSE_SERVER=tcp:127.0.0.1");
-        command.add("export WINEPREFIX='" + TermuxService.OPT_PATH + "/wine-prefixes/" + prefixName + "'");
+        command.add("export WINEPREFIX='" + prefixDir.getAbsolutePath() + "'");
         command.add(";");
 
         // Retrieve command options from JSON
-        File prefixDir = new File(TermuxService.OPT_PATH + "/wine-prefixes/" + prefixName);
         File optionsFile = new File(prefixDir, "options.json");
         try {
             if (optionsFile.exists()) {
